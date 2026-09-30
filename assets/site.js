@@ -1,20 +1,8 @@
 (() => {
   "use strict";
 
-  // Google Analytics 4 measurement ID, e.g. "G-ABC123XYZ9". Leave empty to
-  // disable tracking; it's the only place the ID needs to be set.
-  const GA_ID = "";
-
-  if (GA_ID) {
-    const s = document.createElement("script");
-    s.async = true;
-    s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
-    document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function gtag() { window.dataLayer.push(arguments); };
-    window.gtag("js", new Date());
-    window.gtag("config", GA_ID);
-  }
+  // Google Analytics is loaded by the Google tag snippet at the top of each
+  // page's <head>, as Google recommends — not from here.
 
   // --- Dropdown menu behind the ☰ 2048 logo button ---
   const toggle = document.getElementById("sf-menu-toggle");
