@@ -1,0 +1,548 @@
+:root {
+  --gap: clamp(8px, 2.2vw, 14px);
+  --radius: clamp(6px, 1.6vw, 10px);
+  --bg: #fff5f8;
+  --ink: #5a3d4a;
+  --ink-soft: #866874;
+  --board-bg: #e8a9c2;
+  --cell-bg: rgba(255, 255, 255, 0.45);
+  --overlay-bg: rgba(255, 245, 248, 0.85);
+  --surface: #ffe3ee;
+  --accent: #ae5976;
+  --accent-dark: #b74b71;
+  --link-color: #c9527c;
+  --tile-card-bg: #fffaf9;
+}
+
+* { box-sizing: border-box; }
+
+/* Page-level rules (body background, font, scrolling) live in
+   assets/site.css — the game only lays out inside .sf-stage, which is sized
+   to exactly one screen below the site header. */
+.app {
+  width: 100%;
+  max-width: 560px;
+  height: 100%;
+  max-height: 820px;
+  padding: clamp(4px, 1.5vw, 12px) clamp(12px, 3vw, 24px) clamp(12px, 3vw, 24px);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2.5vw, 16px);
+}
+
+/* The side-panel wrapper is transparent to layout: its children become
+   direct flex items of .app, always stacked in a single centered column.
+   Markup nests them inside side-panel, which puts action-row and footer
+   before board-wrap in document order — use `order` to restore the
+   intended visual order: header, scores, hint, board, undo, attribution. */
+.side-panel {
+  display: contents;
+}
+
+.heading { order: 1; }
+.above-game { order: 2; }
+.board-wrap { order: 3; }
+.footer { order: 4; }
+
+/* Row 1: title left, score/best right — same arrangement as the original
+   2048's .heading (h1.title floated left, .scores-container floated right). */
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.title {
+  margin: 0;
+  flex-shrink: 0;
+  font-size: clamp(22px, 5.5vw, 30px);
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+}
+
+.title-sub {
+  display: inline-block;
+  margin-left: 0.2em;
+  font-size: 0.56em;
+  font-weight: 800;
+  color: var(--accent-dark);
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+}
+
+/* At narrow widths the subtitle competes with Score/Best for the same row —
+   drop it rather than let the header wrap or squeeze awkwardly; "2048" alone
+   is still a clear, familiar title on its own. */
+@media (max-width: 380px) {
+  .title-sub {
+    display: none;
+  }
+}
+
+.scores-container {
+  display: flex;
+  gap: 8px;
+}
+
+.score-box {
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 4px 12px;
+  min-width: 58px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.score-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.85;
+  letter-spacing: 0.5px;
+}
+
+.score-value {
+  font-size: clamp(14px, 3.2vw, 18px);
+  font-weight: 700;
+}
+
+/* Row 2: hint text left, action buttons right — same arrangement as the
+   original's .above-game (.game-intro floated left, .restart-button right).
+   Undo and the theme toggle are our own additions, styled like New Game
+   (the original's only button here) rather than as a separate custom row. */
+.above-game {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.game-intro {
+  margin: 0;
+  font-size: clamp(12px, 3vw, 14px);
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.game-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  /* When .game-intro is long enough to force a wrap, space-between would
+     otherwise leave this alone on its own line pinned to the left — push it
+     to the right instead, staying aligned under Score/Best like the user
+     expects, whether it shares the row with the intro text or not. */
+  margin-left: auto;
+}
+
+.btn-new-game,
+.btn-undo {
+  flex-shrink: 0;
+  border: none;
+  background: var(--accent-dark);
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(12px, 3vw, 14px);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-new-game:active,
+.btn-undo:active {
+  background: var(--accent);
+}
+
+.btn-undo svg {
+  width: 1.15em;
+  height: 1.15em;
+}
+
+.btn-theme-toggle svg {
+  width: 55%;
+  height: 55%;
+}
+
+.btn-theme-toggle .icon-moon { display: none; }
+:root[data-theme="dark"] .btn-theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .btn-theme-toggle .icon-moon { display: block; }
+
+.btn-undo:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.btn-theme-toggle {
+  flex-shrink: 0;
+  border: none;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: clamp(16px, 4vw, 20px);
+  line-height: 1;
+  width: clamp(34px, 8vw, 40px);
+  height: clamp(34px, 8vw, 40px);
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-theme-toggle:active {
+  background: var(--cell-bg);
+}
+
+.btn-theme-toggle:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.board-wrap {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board {
+  position: relative;
+  width: min(100%, 500px);
+  aspect-ratio: 1 / 1;
+  background: var(--board-bg);
+  border-radius: calc(var(--radius) + 4px);
+  padding: var(--gap);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.grid-bg {
+  position: absolute;
+  inset: var(--gap);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: var(--gap);
+}
+
+.grid-bg .cell {
+  background: var(--cell-bg);
+  border-radius: var(--radius);
+}
+
+.tile-layer {
+  position: absolute;
+  inset: var(--gap);
+}
+
+.tile {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius);
+  transition: top 100ms ease-in-out, left 100ms ease-in-out;
+  will-change: top, left;
+  background: var(--tile-card-bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.tile-layer.no-transition .tile {
+  transition: none;
+}
+
+/* Every tile shares the same plain card background — the cupcake image
+   itself (see buildCupcakeImg() in game.js) is what carries the tier
+   progression now, instead of a per-value tile color. object-fit: contain
+   because each cropped photo has a slightly different aspect ratio; letting
+   it stretch would distort the cupcake. */
+.cupcake-img {
+  width: 86%;
+  height: 86%;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.tile.new {
+  animation: pop 160ms ease-in-out;
+}
+
+.tile.merged {
+  animation: pop 140ms ease-in-out;
+  z-index: 2;
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.4); }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-bg);
+  border-radius: calc(var(--radius) + 4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.overlay[hidden] { display: none; }
+
+.overlay-box {
+  text-align: center;
+  /* Sized off the board's own real pixel size (set in measureBoard()), not
+     viewport width — a fixed vw-based size doesn't shrink when the board is
+     squeezed by a short viewport, and the overlay content (title + two
+     buttons) ends up taller than the board, pushing "New Game" out of the
+     clipped, clickable area entirely. */
+  padding: var(--overlay-box-padding, 16px);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.overlay-title {
+  font-size: var(--overlay-title-size, clamp(22px, 6vw, 32px));
+  font-weight: 800;
+  margin: 0 0 var(--overlay-title-gap, 16px);
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.overlay-actions {
+  display: flex;
+  gap: var(--overlay-actions-gap, 10px);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-overlay {
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--overlay-btn-padding, 10px 18px);
+  font-weight: 700;
+  font-size: var(--overlay-btn-size, clamp(13px, 3.4vw, 15px));
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-primary {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.tile-legend {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tile-legend li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.legend-icon {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  background: var(--tile-card-bg);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.legend-icon .cupcake-img {
+  width: 86%;
+  height: 86%;
+}
+
+.legend-name {
+  flex: 1 1 auto;
+  font-size: clamp(12px, 3vw, 13px);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.legend-kcal {
+  flex-shrink: 0;
+  font-size: clamp(11px, 2.8vw, 12px);
+  color: var(--ink-soft);
+}
+
+.footer {
+  text-align: center;
+}
+
+.attribution {
+  margin: 0;
+  font-size: clamp(11px, 2.8vw, 13px);
+  color: var(--ink-soft);
+}
+
+.attribution a {
+  color: var(--link-color);
+  text-decoration: underline;
+}
+
+/* Any short viewport (regardless of width) is tight on room to stack every
+   row of chrome above/below a usably-sized board. Trim the non-essential
+   bits first so the board has more room to work with before it's forced
+   down to its minimum size. */
+@media (max-height: 700px) {
+  .app {
+    gap: 4px;
+    padding: 8px clamp(12px, 3vw, 24px);
+  }
+  .game-intro {
+    display: none;
+  }
+  .title {
+    font-size: clamp(20px, 6vw, 32px);
+  }
+  .score-box {
+    padding: 3px 10px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 6px 12px;
+  }
+  .footer {
+    font-size: 10px;
+  }
+}
+
+/* Beyond the general trim, there's no room left for the attribution line
+   without forcing a scroll — drop it rather than break the "never scroll"
+   rule. Stays a single centered column throughout (matching the classic
+   2048 look) instead of splitting into a side-by-side layout. */
+@media (max-height: 300px) {
+  .footer {
+    display: none;
+  }
+  .app {
+    padding: 6px clamp(12px, 3vw, 24px);
+    gap: 2px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 2px 10px;
+    font-size: 11px;
+  }
+}
+
+/* Pathologically short embeds (well under any real device chrome): the
+   header/actions text alone can already approach the whole viewport height.
+   Compress it to a minimal single-line strip so the board still gets most
+   of the remaining space instead of being pushed into the scroll-triggering
+   floor in measureBoard(). */
+@media (max-height: 220px) {
+  .app {
+    padding: 4px clamp(12px, 3vw, 24px);
+    gap: 1px;
+  }
+  .title {
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+  .score-box {
+    padding: 1px 6px;
+    min-width: 36px;
+  }
+  .score-label {
+    font-size: 7px;
+  }
+  .score-value {
+    font-size: 11px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 1px 8px;
+    font-size: 10px;
+  }
+  .btn-theme-toggle {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #201720;
+  --ink: #f5e6ee;
+  --ink-soft: #c2a3b6;
+  --board-bg: #4a2e40;
+  --cell-bg: rgba(255, 255, 255, 0.06);
+  --overlay-bg: rgba(32, 23, 32, 0.85);
+  --surface: #3d2839;
+  --accent: #b5567e;
+  --accent-dark: #8a3d5f;
+  --link-color: #e8a2c1;
+}
+
+/* The tile legend now lives in the article below the game instead of a modal. */
+.sf-article .tile-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 8px;
+  margin: 0 0 20px;
+}
+
+.sf-article .tile-legend li {
+  margin: 0;
+  background: #fff0f5;
+  color: #5a3d4a;
+}
+
+.sf-article .legend-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.sf-article .legend-name { font-size: 15px; color: #5a3d4a; }
+.sf-article .legend-kcal { font-size: 14px; color: #7a5d69; }
+
+:root[data-theme="dark"] .sf-article .tile-legend li { background: #3d2839; }
+:root[data-theme="dark"] .sf-article .legend-name { color: #f5e6ee; }
+:root[data-theme="dark"] .sf-article .legend-kcal { color: #c2a3b6; }
+
+/* --accent-dark is too dark to read as text on the dark background. */
+:root[data-theme="dark"] .title-sub { color: var(--link-color); }

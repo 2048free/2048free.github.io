@@ -1,0 +1,544 @@
+:root {
+  --radius: clamp(4px, 1.2vw, 8px);
+  --bg: #eef2f6;
+  --ink: #2c3e50;
+  --ink-soft: #607281;
+  --board-bg: #34495e;
+  --cell-bg: rgba(255, 255, 255, 0.08);
+  --overlay-bg: rgba(238, 242, 246, 0.85);
+  --surface: #dde6ee;
+  --accent: #587894;
+  --accent-dark: #34506b;
+  --link-color: #34506b;
+  --tile-card-bg: #fdfefe;
+
+  --tile-2-bg: #eef2f6;      --tile-2-fg: #2c3e50;
+  --tile-4-bg: #dbe6ee;      --tile-4-fg: #2c3e50;
+  --tile-8-bg: #7fb3d5;      --tile-8-fg: #fff;
+  --tile-16-bg: #5b9bd5;     --tile-16-fg: #fff;
+  --tile-32-bg: #4a7fb5;     --tile-32-fg: #fff;
+  --tile-64-bg: #3a5f95;     --tile-64-fg: #fff;
+  --tile-128-bg: #6fcf97;    --tile-128-fg: #fff;
+  --tile-256-bg: #4bb87a;    --tile-256-fg: #fff;
+  --tile-512-bg: #2f9c5f;    --tile-512-fg: #fff;
+  --tile-1024-bg: #f2c94c;   --tile-1024-fg: #2c3e50;
+  --tile-2048-bg: #f2994a;   --tile-2048-fg: #fff;
+  --tile-super-bg: #eb5757;  --tile-super-fg: #fff;
+}
+
+* { box-sizing: border-box; }
+
+/* Page-level rules (body background, font, scrolling) live in
+   assets/site.css — the game only lays out inside .sf-stage, which is sized
+   to exactly one screen below the site header. */
+.app {
+  width: 100%;
+  max-width: 560px;
+  height: 100%;
+  max-height: 820px;
+  padding: clamp(4px, 1.5vw, 12px) clamp(12px, 3vw, 24px) clamp(12px, 3vw, 24px);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2.5vw, 16px);
+}
+
+.side-panel {
+  display: contents;
+}
+
+.heading { order: 1; }
+.above-game { order: 2; }
+.board-wrap { order: 3; }
+.footer { order: 4; }
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.title-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  line-height: 1;
+  font-size: clamp(22px, 5.5vw, 30px);
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+}
+
+/* A standalone pill badge, not plain colored text sitting next to the
+   title — explicit light text on a fixed accent fill keeps it readable in
+   both themes regardless of --ink/--bg contrast, and reads as its own
+   "hex tile" chip rather than a subtitle. */
+.title-sub {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: clamp(10px, 2.8vw, 13px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #fff;
+  background: var(--accent-dark);
+  border-radius: 999px;
+}
+
+.scores-container {
+  display: flex;
+  gap: 8px;
+}
+
+.score-box {
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 4px 12px;
+  min-width: 58px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.score-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.85;
+  letter-spacing: 0.5px;
+}
+
+.score-value {
+  font-size: clamp(14px, 3.2vw, 18px);
+  font-weight: 700;
+}
+
+.above-game {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.game-intro {
+  margin: 0;
+  font-size: clamp(12px, 3vw, 14px);
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.game-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: 100%;
+  margin-left: auto;
+}
+
+.btn-new-game,
+.btn-undo {
+  flex-shrink: 0;
+  border: none;
+  background: var(--accent-dark);
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(12px, 3vw, 14px);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-new-game:active,
+.btn-undo:active {
+  background: var(--accent);
+}
+
+.btn-undo svg {
+  width: 1.15em;
+  height: 1.15em;
+}
+
+.btn-undo:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.btn-theme-toggle {
+  flex-shrink: 0;
+  border: none;
+  background: var(--surface);
+  color: var(--ink);
+  line-height: 1;
+  width: clamp(34px, 8vw, 40px);
+  height: clamp(34px, 8vw, 40px);
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-theme-toggle svg {
+  width: 55%;
+  height: 55%;
+}
+
+.btn-theme-toggle .icon-moon {
+  display: none;
+}
+
+:root[data-theme="dark"] .btn-theme-toggle .icon-sun {
+  display: none;
+}
+
+:root[data-theme="dark"] .btn-theme-toggle .icon-moon {
+  display: block;
+}
+
+.btn-theme-toggle:active {
+  background: var(--cell-bg);
+}
+
+.board-wrap {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The hex board's own width/height (in px) is computed and set by
+   measureBoard() in game.js from the cube-coordinate geometry — CSS just
+   provides the visual chrome (background card + rounded corners). */
+.board {
+  position: relative;
+  background: var(--board-bg);
+  border-radius: calc(var(--radius) + 8px);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.grid-bg,
+.tile-layer {
+  position: absolute;
+  inset: 0;
+}
+
+/* Every hex cell/tile is a positioned box (left/top/width/height set by JS
+   to the exact cube-coordinate bounding box for that cell) containing an
+   inner element that's actually clipped to a flat-top hexagon and inset a
+   few percent, so neighbouring hexagons show a visible gap between them
+   without changing the layout math itself. */
+.hex-cell,
+.hex-tile {
+  position: absolute;
+}
+
+.hex-shape {
+  position: absolute;
+  inset: 5%;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hex-cell .hex-shape {
+  background: var(--cell-bg);
+}
+
+.hex-tile .hex-shape {
+  background: var(--tile-2-bg);
+  color: var(--tile-2-fg);
+  font-weight: 700;
+  font-size: clamp(14px, 6vw, 32px);
+  transition: background-color 100ms ease-in-out;
+}
+
+.hex-tile {
+  transition: top 100ms ease-in-out, left 100ms ease-in-out;
+  will-change: top, left;
+}
+
+.tile-layer.no-transition .hex-tile {
+  transition: none;
+}
+
+.hex-tile[data-value="2"]    .hex-shape { background: var(--tile-2-bg);    color: var(--tile-2-fg); }
+.hex-tile[data-value="4"]    .hex-shape { background: var(--tile-4-bg);    color: var(--tile-4-fg); }
+.hex-tile[data-value="8"]    .hex-shape { background: var(--tile-8-bg);    color: var(--tile-8-fg); }
+.hex-tile[data-value="16"]   .hex-shape { background: var(--tile-16-bg);   color: var(--tile-16-fg); }
+.hex-tile[data-value="32"]   .hex-shape { background: var(--tile-32-bg);   color: var(--tile-32-fg); }
+.hex-tile[data-value="64"]   .hex-shape { background: var(--tile-64-bg);   color: var(--tile-64-fg); }
+.hex-tile[data-value="128"]  .hex-shape { background: var(--tile-128-bg);  color: var(--tile-128-fg); }
+.hex-tile[data-value="256"]  .hex-shape { background: var(--tile-256-bg);  color: var(--tile-256-fg); }
+.hex-tile[data-value="512"]  .hex-shape { background: var(--tile-512-bg);  color: var(--tile-512-fg); }
+.hex-tile[data-value="1024"] .hex-shape { background: var(--tile-1024-bg); color: var(--tile-1024-fg); }
+.hex-tile[data-value="2048"] .hex-shape { background: var(--tile-2048-bg); color: var(--tile-2048-fg); }
+.hex-tile[data-super="true"] .hex-shape { background: var(--tile-super-bg); color: var(--tile-super-fg); }
+
+.hex-tile.new .hex-shape {
+  animation: pop 160ms ease-in-out;
+}
+
+.hex-tile.merged .hex-shape {
+  animation: pop 140ms ease-in-out;
+  z-index: 2;
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.4); }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.overlay[hidden] { display: none; }
+
+.overlay-box {
+  text-align: center;
+  padding: var(--overlay-box-padding, 16px);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.overlay-title {
+  font-size: var(--overlay-title-size, clamp(22px, 6vw, 32px));
+  font-weight: 800;
+  margin: 0 0 var(--overlay-title-gap, 16px);
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.overlay-actions {
+  display: flex;
+  gap: var(--overlay-actions-gap, 10px);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-overlay {
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--overlay-btn-padding, 10px 18px);
+  font-weight: 700;
+  font-size: var(--overlay-btn-size, clamp(13px, 3.4vw, 15px));
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-primary {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.keymap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.keymap-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.keycap {
+  width: 64px;
+  height: 64px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.keycap-arrow {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--accent-dark);
+}
+
+.keycap-key {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--ink-soft);
+}
+
+.footer {
+  text-align: center;
+}
+
+.attribution {
+  margin: 0;
+  font-size: clamp(11px, 2.8vw, 13px);
+  color: var(--ink-soft);
+}
+
+.attribution a {
+  color: var(--link-color);
+  text-decoration: underline;
+}
+
+@media (max-height: 700px) {
+  .app {
+    gap: 4px;
+    padding: 8px clamp(12px, 3vw, 24px);
+  }
+  .game-intro {
+    display: none;
+  }
+  .title {
+    font-size: clamp(20px, 6vw, 32px);
+  }
+  .score-box {
+    padding: 3px 10px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 6px 12px;
+  }
+  .footer {
+    font-size: 10px;
+  }
+}
+
+@media (max-height: 300px) {
+  .footer {
+    display: none;
+  }
+  .app {
+    padding: 6px clamp(12px, 3vw, 24px);
+    gap: 2px;
+  }
+  .title-sub {
+    display: none;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 2px 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 260px) {
+  .btn-new-game,
+  .btn-undo {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  .btn-theme-toggle,
+  .btn-info {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+  .game-actions {
+    gap: 4px;
+  }
+}
+
+@media (max-height: 220px) {
+  .app {
+    padding: 4px clamp(12px, 3vw, 24px);
+    gap: 1px;
+  }
+  .title {
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+  .score-box {
+    padding: 1px 6px;
+    min-width: 36px;
+  }
+  .score-label {
+    font-size: 7px;
+  }
+  .score-value {
+    font-size: 11px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 1px 8px;
+    font-size: 10px;
+  }
+  .btn-theme-toggle,
+  .btn-info {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #161d24;
+  --ink: #e7edf2;
+  --ink-soft: #9fb0bd;
+  --board-bg: #1c2833;
+  --cell-bg: rgba(255, 255, 255, 0.05);
+  --overlay-bg: rgba(22, 29, 36, 0.85);
+  --surface: #26313c;
+  --accent: #3d5a75;
+  --accent-dark: #29405a;
+  --link-color: #8fb8db;
+}
+
+/* The keyboard map now lives in the article below the game. */
+.sf-article .keymap {
+  margin: 8px 0 20px;
+}
+
+.sf-article .keycap {
+  background: #e3ebf2;
+  width: 72px;
+  height: 72px;
+}
+
+.sf-article .keycap-arrow { color: #34506b; font-size: 22px; }
+.sf-article .keycap-key { color: #2c3e50; font-size: 14px; }
+
+:root[data-theme="dark"] .sf-article .keycap { background: #26313c; }
+:root[data-theme="dark"] .sf-article .keycap-arrow { color: #8fb8db; }
+:root[data-theme="dark"] .sf-article .keycap-key { color: #e7edf2; }

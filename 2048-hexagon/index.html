@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2048 Hexagon</title>
+<meta name="description" content="Play 2048 Hexagon free online. Slide tiles six ways on a 19-cell hex board, learn the Q W E A S D controls and a simple strategy to reach 2048.">
+<link rel="canonical" href="https://2048free.github.io/2048-hexagon/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2048 Hexagon">
+<meta property="og:description" content="Slide tiles in six directions on a hexagonal board and reach 2048.">
+<meta property="og:url" content="https://2048free.github.io/2048-hexagon/">
+<meta property="og:image" content="https://2048free.github.io/assets/thumbs/2048-hexagon.png">
+<link rel="icon" href="/assets/favicon-hexagon.svg" type="image/svg+xml">
+<script>try{if(localStorage.getItem("2048free_theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/2048-hexagon/game.css">
+</head>
+<body class="sf">
+
+<header class="sf-header">
+  <div class="sf-header-inner">
+    <div class="sf-brand">
+      <button class="sf-logo" id="sf-menu-toggle" type="button" aria-expanded="false" aria-controls="sf-menu" aria-label="Open menu">
+        <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>2048
+      </button>
+      <nav class="sf-menu" id="sf-menu" hidden>
+        <a class="sf-menu-item" href="/">
+          <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>
+          <span><b>2048</b><small>The original 4×4 puzzle</small></span>
+        </a>
+        <a class="sf-menu-item" href="#how-to-play">
+          <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg>
+          <span><b>How to play</b><small>Controls, rules, and FAQs</small></span>
+        </a>
+        <a class="sf-menu-item" href="/2048-games/">
+          <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
+          <span><b>More 2048 games</b><small>Cupcakes, Hexagon, and more</small></span>
+        </a>
+        <div class="sf-menu-sep"></div>
+        <div class="sf-menu-links">
+          <a href="/2048-cupcakes/">2048 Cupcakes</a>
+          <a href="/2048-hexagon/" aria-current="page">2048 Hexagon</a>
+          <a href="/2048-fibonacci/">2048 Fibonacci</a>
+          <a href="/about/">About</a>
+          <a href="/privacy-policy/">Privacy Policy</a>
+        </div>
+      </nav>
+    </div>
+    <div class="sf-actions">
+      <a class="sf-btn-outline" href="/2048-games/">
+        <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg><span>More<span class="sf-hide-sm"> 2048</span> games</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<section class="sf-stage" aria-label="2048 Hexagon game">
+  <div class="app">
+    <div class="side-panel">
+      <div class="heading">
+        <div class="title-block">
+          <div class="title">2048</div>
+          <span class="title-sub">Hexagon</span>
+        </div>
+        <div class="scores-container">
+          <div class="score-box">
+            <span class="score-label">Score</span>
+            <span class="score-value" id="score">0</span>
+          </div>
+          <div class="score-box">
+            <span class="score-label">Best</span>
+            <span class="score-value" id="best">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="above-game">
+        <p class="game-intro">Swipe or use <strong>Q W E A S D</strong> to slide in six directions.</p>
+        <div class="game-actions">
+          <button class="btn-undo" id="undo-btn" type="button" aria-label="Undo last move" title="Undo last move" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Undo
+          </button>
+          <button class="btn-new-game" id="new-game-btn" type="button">New Game</button>
+          <button class="btn-theme-toggle" id="theme-toggle-btn" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="board-wrap">
+      <div class="board" id="board">
+        <div class="grid-bg" id="grid-bg" aria-hidden="true"></div>
+        <div class="tile-layer" id="tile-layer"></div>
+        <div class="overlay" id="overlay" hidden>
+          <div class="overlay-box">
+            <p class="overlay-title" id="overlay-title">You Win!</p>
+            <div class="overlay-actions">
+              <button class="btn-overlay btn-secondary" id="overlay-continue-btn" type="button">Keep Playing</button>
+              <button class="btn-overlay btn-primary" id="overlay-retry-btn" type="button">New Game</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="sf-main">
+  <article class="sf-article" id="how-to-play">
+    <h1>2048 Hexagon</h1>
+    <p class="sf-lead">Same idea as 2048, different shape. The board is a hexagon of 19 cells, and instead of four directions you can slide tiles six ways. It sounds like a small change, but it changes how you plan almost every move.</p>
+
+    <h2>How to play 2048 Hexagon</h2>
+    <p>Each move slides every tile as far as it can go in one direction. Two tiles with the same number that collide merge into their sum, and a new 2 (sometimes a 4) appears. Build a <strong>2048</strong> tile to win, or keep going for a bigger score.</p>
+    <p>On a keyboard, the six directions sit on Q W E and A S D, laid out just like the arrows on the board:</p>
+    <div class="keymap">
+      <div class="keymap-row">
+        <div class="keycap"><span class="keycap-arrow">↖</span><span class="keycap-key">Q</span></div>
+        <div class="keycap"><span class="keycap-arrow">↑</span><span class="keycap-key">W</span></div>
+        <div class="keycap"><span class="keycap-arrow">↗</span><span class="keycap-key">E</span></div>
+      </div>
+      <div class="keymap-row">
+        <div class="keycap"><span class="keycap-arrow">↙</span><span class="keycap-key">A</span></div>
+        <div class="keycap"><span class="keycap-arrow">↓</span><span class="keycap-key">S</span></div>
+        <div class="keycap"><span class="keycap-arrow">↘</span><span class="keycap-key">D</span></div>
+      </div>
+    </div>
+    <p>The arrow keys only cover four of them: <span class="sf-kbd">↑</span> and <span class="sf-kbd">↓</span> match W and S, while <span class="sf-kbd">←</span> and <span class="sf-kbd">→</span> match Q and E. The two lower diagonals exist only on A and D, so if you play with a keyboard, keep your hand on the letters. On a phone, just swipe on the board and the game picks whichever of the six directions is closest to your swipe.</p>
+
+    <h2>Why it plays differently</h2>
+    <p>There's no straight left or right. Tiles move up, down, or along four diagonals, so the neat rows you'd build in classic 2048 don't exist here. In return, most cells have more neighbors: the center touches six others, and the cells along the edge touch three or four. More neighbors means more chances to merge, but also more room for a stray tile to wedge itself between two big ones.</p>
+
+    <h2>Tips from playing it</h2>
+    <ul>
+      <li>Treat the bottom point of the hexagon as your corner. S, A, and D all push tiles downward, and none of them can move a tile out of that bottom cell. You can play most of a game with just those three keys and keep your biggest tile parked there.</li>
+      <li>Reach for W, Q, or E only when nothing below can move, and think about where the new tile might land first.</li>
+      <li>With only 19 cells, the board fills up fast. Merge small tiles early instead of saving them for later.</li>
+      <li>The game ends when every cell is full and no two neighbors match. Undo gives you one step back, which is usually enough to get out of a bad upward slide.</li>
+    </ul>
+    <h2>FAQs</h2>
+    <details>
+      <summary>Is 2048 Hexagon harder than the classic game?</summary>
+      <p>Not exactly harder, just different. You get three more cells than the 4×4 board and two extra directions, but no straight rows to hide behind. Players who rely on the corner strategy usually need a few games to adjust.</p>
+    </details>
+    <details>
+      <summary>Why doesn't the left arrow move tiles straight left?</summary>
+      <p>Because there is no straight left on this board. The columns of hexagons run up and down, so ← slides tiles up and to the left (the same as Q), and → slides them up and to the right (the same as E).</p>
+    </details>
+    <details>
+      <summary>Can I play on my phone?</summary>
+      <p>Yes. Swipe on the board in any of the six directions. You don't need to be precise, since the game picks the direction closest to your swipe. Swiping outside the board scrolls the page instead.</p>
+    </details>
+    <details>
+      <summary>Is my best score saved?</summary>
+      <p>Yes, in your browser on this device, separately from the other games on this site. Clearing your browser data resets it.</p>
+    </details>
+    <p style="font-size:14px;color:var(--sf-ink-soft)">The hexagonal-board concept is inspired by <a href="https://2048hexagon.com/" target="_blank" rel="nofollow noopener">2048 Hexagon</a>.</p>
+  </article>
+
+  <section class="sf-related" aria-labelledby="related-title">
+    <p class="sf-section-title" id="related-title">You may also like</p>
+    <p class="sf-section-sub">More free 2048 games to play in your browser.</p>
+    <div class="sf-grid">
+      <a class="sf-card" href="/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048.png" alt="Classic 2048 game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Classic</span>
+          <span class="sf-card-desc">The original number-merging puzzle.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+      <a class="sf-card" href="/2048-cupcakes/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048-cupcakes.png" alt="2048 Cupcakes game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Cupcakes</span>
+          <span class="sf-card-desc">Merge sweet cupcakes instead of numbers.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+      <a class="sf-card" href="/2048-fibonacci/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048-fibonacci.png" alt="2048 Fibonacci game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Fibonacci</span>
+          <span class="sf-card-desc">Merge neighboring Fibonacci numbers up to 2584.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="sf-footer">
+  <nav aria-label="Footer">
+    <a href="/2048-games/">All 2048 games</a>
+    <a href="/about/">About</a>
+    <a href="/privacy-policy/">Privacy Policy</a>
+  </nav>
+  <p>© 2026 2048free.github.io · Inspired by <a href="https://github.com/gabrielecirulli/2048" target="_blank" rel="nofollow noopener">2048 by Gabriele Cirulli</a></p>
+</footer>
+
+<script src="/assets/site.js"></script>
+<script src="/2048-hexagon/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,470 @@
+:root {
+  --gap: clamp(8px, 2.2vw, 14px);
+  --radius: clamp(6px, 1.6vw, 10px);
+  --bg: #faf8ef;
+  --ink: #5b4d3f;
+  --ink-soft: #6d6358;
+  --board-bg: #bbada0;
+  --cell-bg: rgba(238, 228, 218, 0.38);
+  --overlay-bg: rgba(250, 248, 239, 0.82);
+  --surface: #ede4d6;
+  --accent: #85715f;
+  --accent-dark: #6f5b4a;
+  --link-color: #6f5b4a;
+
+  --tile-2-bg: #eee4da;      --tile-2-fg: #776e65;
+  --tile-4-bg: #ede0c8;      --tile-4-fg: #776e65;
+  --tile-8-bg: #f2b179;      --tile-8-fg: #fff8f0;
+  --tile-16-bg: #f59563;     --tile-16-fg: #fff8f0;
+  --tile-32-bg: #f67c5f;     --tile-32-fg: #fff8f0;
+  --tile-64-bg: #f65e3b;     --tile-64-fg: #fff8f0;
+  --tile-128-bg: #edcf72;    --tile-128-fg: #fff8f0;
+  --tile-256-bg: #edcc61;    --tile-256-fg: #fff8f0;
+  --tile-512-bg: #edc850;    --tile-512-fg: #fff8f0;
+  --tile-1024-bg: #edc53f;   --tile-1024-fg: #fff8f0;
+  --tile-2048-bg: #edc22e;   --tile-2048-fg: #fff8f0;
+  --tile-super-bg: #3c3a32; --tile-super-fg: #f9f6f2;
+}
+
+* { box-sizing: border-box; }
+
+/* Page-level rules (body background, font, scrolling) live in
+   assets/site.css — the game only lays out inside .sf-stage, which is sized
+   to exactly one screen below the site header. */
+.app {
+  width: 100%;
+  max-width: 560px;
+  height: 100%;
+  max-height: 820px;
+  padding: clamp(4px, 1.5vw, 12px) clamp(12px, 3vw, 24px) clamp(12px, 3vw, 24px);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2.5vw, 16px);
+}
+
+/* The side-panel wrapper is transparent to layout: its children become
+   direct flex items of .app, always stacked in a single centered column.
+   Markup nests them inside side-panel, which puts action-row and footer
+   before board-wrap in document order — use `order` to restore the
+   intended visual order: header, scores, hint, board, undo, attribution. */
+.side-panel {
+  display: contents;
+}
+
+.heading { order: 1; }
+.above-game { order: 2; }
+.board-wrap { order: 3; }
+.footer { order: 4; }
+
+/* Row 1: title left, score/best right — same arrangement as the original
+   2048's .heading (h1.title floated left, .scores-container floated right). */
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.title {
+  margin: 0;
+  flex-shrink: 0;
+  font-size: clamp(22px, 5.5vw, 30px);
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+}
+
+.scores-container {
+  display: flex;
+  gap: 8px;
+  /* The heading has no title on the homepage, so keep Score/Best right-aligned
+     above the action buttons instead of drifting to the left. */
+  margin-left: auto;
+}
+
+.score-box {
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 4px 12px;
+  min-width: 58px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.score-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.85;
+  letter-spacing: 0.5px;
+}
+
+.score-value {
+  font-size: clamp(14px, 3.2vw, 18px);
+  font-weight: 700;
+}
+
+/* Row 2: hint text left, action buttons right — same arrangement as the
+   original's .above-game (.game-intro floated left, .restart-button right).
+   Undo and the theme toggle are our own additions, styled like New Game
+   (the original's only button here) rather than as a separate custom row. */
+.above-game {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.game-intro {
+  margin: 0;
+  font-size: clamp(12px, 3vw, 14px);
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.game-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  /* When .game-intro is long enough to force a wrap, space-between would
+     otherwise leave this alone on its own line pinned to the left — push it
+     to the right instead, staying aligned under Score/Best like the user
+     expects, whether it shares the row with the intro text or not. */
+  margin-left: auto;
+}
+
+.btn-new-game,
+.btn-undo {
+  flex-shrink: 0;
+  border: none;
+  background: var(--accent-dark);
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(12px, 3vw, 14px);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-undo svg {
+  width: 1.15em;
+  height: 1.15em;
+}
+
+.btn-theme-toggle svg {
+  width: 55%;
+  height: 55%;
+}
+
+.btn-theme-toggle .icon-moon { display: none; }
+:root[data-theme="dark"] .btn-theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .btn-theme-toggle .icon-moon { display: block; }
+
+.btn-new-game:active,
+.btn-undo:active {
+  background: var(--accent);
+}
+
+.btn-undo:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.btn-theme-toggle {
+  flex-shrink: 0;
+  border: none;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: clamp(16px, 4vw, 20px);
+  line-height: 1;
+  width: clamp(34px, 8vw, 40px);
+  height: clamp(34px, 8vw, 40px);
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-theme-toggle:active {
+  background: var(--cell-bg);
+}
+
+.btn-theme-toggle:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.board-wrap {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board {
+  position: relative;
+  width: min(100%, 500px);
+  aspect-ratio: 1 / 1;
+  background: var(--board-bg);
+  border-radius: calc(var(--radius) + 4px);
+  padding: var(--gap);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.grid-bg {
+  position: absolute;
+  inset: var(--gap);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: var(--gap);
+}
+
+.grid-bg .cell {
+  background: var(--cell-bg);
+  border-radius: var(--radius);
+}
+
+.tile-layer {
+  position: absolute;
+  inset: var(--gap);
+}
+
+.tile {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: clamp(16px, 6.5vw, 34px);
+  transition: top 100ms ease-in-out, left 100ms ease-in-out;
+  will-change: top, left;
+  background: var(--tile-2-bg);
+  color: var(--tile-2-fg);
+}
+
+.tile-layer.no-transition .tile {
+  transition: none;
+}
+
+.tile[data-value="2"]    { background: var(--tile-2-bg);    color: var(--tile-2-fg); }
+.tile[data-value="4"]    { background: var(--tile-4-bg);    color: var(--tile-4-fg); }
+.tile[data-value="8"]    { background: var(--tile-8-bg);    color: var(--tile-8-fg); }
+.tile[data-value="16"]   { background: var(--tile-16-bg);   color: var(--tile-16-fg); }
+.tile[data-value="32"]   { background: var(--tile-32-bg);   color: var(--tile-32-fg); }
+.tile[data-value="64"]   { background: var(--tile-64-bg);   color: var(--tile-64-fg); }
+.tile[data-value="128"]  { background: var(--tile-128-bg);  color: var(--tile-128-fg); }
+.tile[data-value="256"]  { background: var(--tile-256-bg);  color: var(--tile-256-fg); }
+.tile[data-value="512"]  { background: var(--tile-512-bg);  color: var(--tile-512-fg); }
+.tile[data-value="1024"] { background: var(--tile-1024-bg); color: var(--tile-1024-fg); }
+.tile[data-value="2048"] { background: var(--tile-2048-bg); color: var(--tile-2048-fg); }
+.tile[data-super="true"] { background: var(--tile-super-bg); color: var(--tile-super-fg); }
+
+.tile.new {
+  animation: pop 160ms ease-in-out;
+}
+
+.tile.merged {
+  animation: pop 140ms ease-in-out;
+  z-index: 2;
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.4); }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-bg);
+  border-radius: calc(var(--radius) + 4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.overlay[hidden] { display: none; }
+
+.overlay-box {
+  text-align: center;
+  /* Sized off the board's own real pixel size (set in measureBoard()), not
+     viewport width — a fixed vw-based size doesn't shrink when the board is
+     squeezed by a short viewport, and the overlay content (title + two
+     buttons) ends up taller than the board, pushing "New Game" out of the
+     clipped, clickable area entirely. */
+  padding: var(--overlay-box-padding, 16px);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.overlay-title {
+  font-size: var(--overlay-title-size, clamp(22px, 6vw, 32px));
+  font-weight: 800;
+  margin: 0 0 var(--overlay-title-gap, 16px);
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.overlay-actions {
+  display: flex;
+  gap: var(--overlay-actions-gap, 10px);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-overlay {
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--overlay-btn-padding, 10px 18px);
+  font-weight: 700;
+  font-size: var(--overlay-btn-size, clamp(13px, 3.4vw, 15px));
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-primary {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.footer {
+  text-align: center;
+}
+
+.attribution {
+  margin: 0;
+  font-size: clamp(11px, 2.8vw, 13px);
+  color: var(--ink-soft);
+}
+
+.attribution a {
+  color: var(--link-color);
+  text-decoration: underline;
+}
+
+/* Any short viewport (regardless of width) is tight on room to stack every
+   row of chrome above/below a usably-sized board. Trim the non-essential
+   bits first so the board has more room to work with before it's forced
+   down to its minimum size. */
+@media (max-height: 700px) {
+  .app {
+    gap: 4px;
+    padding: 8px clamp(12px, 3vw, 24px);
+  }
+  .game-intro {
+    display: none;
+  }
+  .title {
+    font-size: clamp(20px, 6vw, 32px);
+  }
+  .score-box {
+    padding: 3px 10px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 6px 12px;
+  }
+  .footer {
+    font-size: 10px;
+  }
+}
+
+/* Beyond the general trim, there's no room left for the attribution line
+   without forcing a scroll — drop it rather than break the "never scroll"
+   rule. Stays a single centered column throughout (matching the classic
+   2048 look) instead of splitting into a side-by-side layout. */
+@media (max-height: 300px) {
+  .footer {
+    display: none;
+  }
+  .app {
+    padding: 6px clamp(12px, 3vw, 24px);
+    gap: 2px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 2px 10px;
+    font-size: 11px;
+  }
+}
+
+/* Pathologically short embeds (well under any real device chrome): the
+   header/actions text alone can already approach the whole viewport height.
+   Compress it to a minimal single-line strip so the board still gets most
+   of the remaining space instead of being pushed into the scroll-triggering
+   floor in measureBoard(). */
+@media (max-height: 220px) {
+  .app {
+    padding: 4px clamp(12px, 3vw, 24px);
+    gap: 1px;
+  }
+  .title {
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+  .score-box {
+    padding: 1px 6px;
+    min-width: 36px;
+  }
+  .score-label {
+    font-size: 7px;
+  }
+  .score-value {
+    font-size: 11px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 1px 8px;
+    font-size: 10px;
+  }
+  .btn-theme-toggle {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1b1917;
+  --ink: #f2ece2;
+  --ink-soft: #b7ada0;
+  --board-bg: #2a2621;
+  --cell-bg: rgba(255, 255, 255, 0.06);
+  --overlay-bg: rgba(27, 25, 23, 0.82);
+  --surface: #3a352e;
+  --accent: #6f5b4a;
+  --accent-dark: #4c3d31;
+  --link-color: #d8b992;
+}

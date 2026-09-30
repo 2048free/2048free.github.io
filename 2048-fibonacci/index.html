@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2048 Fibonacci</title>
+<meta name="description" content="Play 2048 Fibonacci free online. Merge neighboring Fibonacci numbers like 1+2 and 2+3, learn why twin tiles won't merge, and build your way to 2584.">
+<link rel="canonical" href="https://2048free.github.io/2048-fibonacci/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2048 Fibonacci">
+<meta property="og:description" content="Merge neighboring Fibonacci numbers and build your way to 2584.">
+<meta property="og:url" content="https://2048free.github.io/2048-fibonacci/">
+<meta property="og:image" content="https://2048free.github.io/assets/thumbs/2048-fibonacci.png">
+<link rel="icon" href="/assets/favicon-fibonacci.svg" type="image/svg+xml">
+<script>try{if(localStorage.getItem("2048free_theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/2048-fibonacci/game.css">
+</head>
+<body class="sf">
+
+<header class="sf-header">
+  <div class="sf-header-inner">
+    <div class="sf-brand">
+      <button class="sf-logo" id="sf-menu-toggle" type="button" aria-expanded="false" aria-controls="sf-menu" aria-label="Open menu">
+        <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>2048
+      </button>
+      <nav class="sf-menu" id="sf-menu" hidden>
+        <a class="sf-menu-item" href="/">
+          <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>
+          <span><b>2048</b><small>The original 4×4 puzzle</small></span>
+        </a>
+        <a class="sf-menu-item" href="#how-to-play">
+          <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg>
+          <span><b>How to play</b><small>Merge rules, tips, and FAQs</small></span>
+        </a>
+        <a class="sf-menu-item" href="/2048-games/">
+          <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
+          <span><b>More 2048 games</b><small>Cupcakes, Hexagon, and more</small></span>
+        </a>
+        <div class="sf-menu-sep"></div>
+        <div class="sf-menu-links">
+          <a href="/2048-cupcakes/">2048 Cupcakes</a>
+          <a href="/2048-hexagon/">2048 Hexagon</a>
+          <a href="/2048-fibonacci/" aria-current="page">2048 Fibonacci</a>
+          <a href="/about/">About</a>
+          <a href="/privacy-policy/">Privacy Policy</a>
+        </div>
+      </nav>
+    </div>
+    <div class="sf-actions">
+      <a class="sf-btn-outline" href="/2048-games/">
+        <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg><span>More<span class="sf-hide-sm"> 2048</span> games</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<section class="sf-stage" aria-label="2048 Fibonacci game">
+  <div class="app">
+    <div class="side-panel">
+      <div class="heading">
+        <div class="title">2048<span class="title-sub">Fibonacci</span></div>
+        <div class="scores-container">
+          <div class="score-box">
+            <span class="score-label">Score</span>
+            <span class="score-value" id="score">0</span>
+          </div>
+          <div class="score-box">
+            <span class="score-label">Best</span>
+            <span class="score-value" id="best">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="above-game">
+        <p class="game-intro">Merge neighbors in the sequence: 1+1, 1+2, 2+3… Reach <strong>2584</strong> to win!</p>
+        <div class="game-actions">
+          <button class="btn-undo" id="undo-btn" type="button" aria-label="Undo last move" title="Undo last move" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Undo
+          </button>
+          <button class="btn-new-game" id="new-game-btn" type="button">New Game</button>
+          <button class="btn-theme-toggle" id="theme-toggle-btn" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="board-wrap">
+      <div class="board" id="board">
+        <div class="grid-bg" id="grid-bg" aria-hidden="true"></div>
+        <div class="tile-layer" id="tile-layer"></div>
+        <div class="overlay" id="overlay" hidden>
+          <div class="overlay-box">
+            <p class="overlay-title" id="overlay-title">You Win!</p>
+            <div class="overlay-actions">
+              <button class="btn-overlay btn-secondary" id="overlay-continue-btn" type="button">Keep Playing</button>
+              <button class="btn-overlay btn-primary" id="overlay-retry-btn" type="button">New Game</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="sf-main">
+  <article class="sf-article" id="how-to-play">
+    <h1>2048 Fibonacci</h1>
+    <p class="sf-lead">This version keeps the sliding board you know from 2048 but swaps the doubling rule for the Fibonacci sequence. Instead of joining two equal tiles, you join two numbers that sit next to each other in the sequence: 1 and 1 make 2, 1 and 2 make 3, 2 and 3 make 5, and so on, all the way up to 2584.</p>
+
+    <h2>How to play 2048 Fibonacci</h2>
+    <p>Slide the board with the arrow keys or <span class="sf-kbd">W</span> <span class="sf-kbd">A</span> <span class="sf-kbd">S</span> <span class="sf-kbd">D</span>, or swipe on the board if you're on a phone. Every tile moves as far as it can. Two tiles merge when they're neighbors in the sequence <strong>1, 1, 2, 3, 5, 8, 13, 21…</strong>, and the new tile is their sum. After each move, a 1 (now and then a 2) shows up in an empty cell. Build a <strong>2584</strong> tile to win, then keep going if you want a bigger score.</p>
+
+    <h2>The rule that trips everyone up</h2>
+    <p>Equal tiles almost never merge here. Two 2s, or two 5s, will sit side by side forever, because 2 + 2 and 5 + 5 aren't Fibonacci numbers. The only twin pair that works is 1 + 1. For your first few games, your classic 2048 instinct will keep hunting for twins. Look for next-door numbers instead.</p>
+
+    <h2>Why it's a longer game</h2>
+    <p>A merge never changes the total of all the numbers on the board. It just packs them into fewer tiles. New tiles here are worth about 1.1 on average, compared with 2.2 in classic 2048. So reaching 2584 takes roughly 2,350 moves, while getting to 2048 in the original takes around 930. Settle in.</p>
+
+    <h2>Tips from playing it</h2>
+    <ul>
+      <li>Line tiles up in sequence order along one edge, like 89, 55, 34, 21. Every pair in that row can merge, so a tidy row folds up in one satisfying chain.</li>
+      <li>Keep a spare 1 near your small tiles. It merges with a 1 or a 2, which makes it the most flexible tile on the board.</li>
+      <li>Watch for twins inside your chain. Two 13s next to each other block the whole row until one of them grows.</li>
+    </ul>
+
+    <h2>FAQs</h2>
+    <details>
+      <summary>Why is the goal 2584 and not 2048?</summary>
+      <p>2048 isn't a Fibonacci number, so no tile can ever show it. 2584 is the closest Fibonacci number, which makes it the natural stand-in.</p>
+    </details>
+    <details>
+      <summary>How is the score counted?</summary>
+      <p>Each merge adds the value of the tile it creates. Merging 34 and 55 adds 89 to your score.</p>
+    </details>
+    <details>
+      <summary>Is my best score saved?</summary>
+      <p>Yes, in your browser on this device, separately from the other games on this site. Clearing your browser data resets it.</p>
+    </details>
+  </article>
+
+  <section class="sf-related" aria-labelledby="related-title">
+    <p class="sf-section-title" id="related-title">You may also like</p>
+    <p class="sf-section-sub">More free 2048 games to play in your browser.</p>
+    <div class="sf-grid">
+      <a class="sf-card" href="/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048.png" alt="Classic 2048 game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Classic</span>
+          <span class="sf-card-desc">The original number-merging puzzle.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+      <a class="sf-card" href="/2048-cupcakes/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048-cupcakes.png" alt="2048 Cupcakes game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Cupcakes</span>
+          <span class="sf-card-desc">Merge sweet cupcakes instead of numbers.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+      <a class="sf-card" href="/2048-hexagon/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048-hexagon.png" alt="2048 Hexagon game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Hexagon</span>
+          <span class="sf-card-desc">Slide tiles in six directions on a hex grid.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="sf-footer">
+  <nav aria-label="Footer">
+    <a href="/2048-games/">All 2048 games</a>
+    <a href="/about/">About</a>
+    <a href="/privacy-policy/">Privacy Policy</a>
+  </nav>
+  <p>© 2026 2048free.github.io · Inspired by <a href="https://github.com/gabrielecirulli/2048" target="_blank" rel="nofollow noopener">2048 by Gabriele Cirulli</a></p>
+</footer>
+
+<script src="/assets/site.js"></script>
+<script src="/2048-fibonacci/game.js"></script>
+</body>
+</html>
