@@ -470,6 +470,8 @@
   }
 
   window.addEventListener("keydown", (e) => {
+    // Leave browser shortcuts alone (Ctrl+D bookmark, Ctrl+S save, Alt+Left back...).
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
     const direction = KEY_MAP[e.key];
     if (!direction) return;
     if (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]")) return;
