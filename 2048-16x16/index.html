@@ -9,20 +9,21 @@
   gtag('js', new Date());
 
   gtag('config', 'G-G84GT2WR56');
-</script><meta charset="UTF-8">
+</script>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>2048 Hexagon</title>
-<meta name="description" content="Play 2048 Hexagon free online. Slide tiles six ways on a 19-cell hex board, learn the Q W E A S D controls and a simple strategy to reach 2048.">
-<link rel="canonical" href="https://2048free.github.io/2048-hexagon/">
+<title>2048 16x16</title>
+<meta name="description" content="Play 2048 16x16 free online. A giant 256-cell board with an Auto Play bot, plus test results on which bot pattern builds the biggest tile.">
+<link rel="canonical" href="https://2048free.github.io/2048-16x16/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="2048 Hexagon">
-<meta property="og:description" content="Slide tiles in six directions on a hexagonal board and reach 2048.">
-<meta property="og:url" content="https://2048free.github.io/2048-hexagon/">
-<meta property="og:image" content="https://2048free.github.io/assets/thumbs/2048-hexagon.png">
-<link rel="icon" href="/assets/favicon-hexagon.svg" type="image/svg+xml">
+<meta property="og:title" content="2048 16x16">
+<meta property="og:description" content="A giant 256-cell 2048 board with an Auto Play bot.">
+<meta property="og:url" content="https://2048free.github.io/2048-16x16/">
+<meta property="og:image" content="https://2048free.github.io/assets/thumbs/2048-16x16.png">
+<link rel="icon" href="/assets/favicon-16x16.svg" type="image/svg+xml">
 <script>try{if(localStorage.getItem("2048free_theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
 <link rel="stylesheet" href="/assets/site.css">
-<link rel="stylesheet" href="/2048-hexagon/game.css">
+<link rel="stylesheet" href="/2048-16x16/game.css">
 </head>
 <body class="sf">
 
@@ -39,7 +40,7 @@
         </a>
         <a class="sf-menu-item" href="#how-to-play">
           <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg>
-          <span><b>How to play</b><small>Controls, rules, and FAQs</small></span>
+          <span><b>How to play</b><small>Rules, Auto Play, and FAQs</small></span>
         </a>
         <a class="sf-menu-item" href="/2048-games/">
           <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
@@ -48,7 +49,7 @@
         <div class="sf-menu-sep"></div>
         <div class="sf-menu-links">
           <a href="/2048-cupcakes/">2048 Cupcakes</a>
-          <a href="/2048-hexagon/" aria-current="page">2048 Hexagon</a>
+          <a href="/2048-hexagon/">2048 Hexagon</a>
           <a href="/2048-fibonacci/">2048 Fibonacci</a>
           <a href="/about/">About</a>
           <a href="/privacy-policy/">Privacy Policy</a>
@@ -63,13 +64,13 @@
   </div>
 </header>
 
-<section class="sf-stage" aria-label="2048 Hexagon game">
+<section class="sf-stage" aria-label="2048 16x16 game">
   <div class="app">
     <div class="side-panel">
       <div class="heading">
         <div class="title-block">
           <div class="title">2048</div>
-          <span class="title-sub">Hexagon</span>
+          <span class="title-sub">16×16</span>
         </div>
         <div class="scores-container">
           <div class="score-box">
@@ -84,7 +85,7 @@
       </div>
 
       <div class="above-game">
-        <p class="game-intro">Swipe or use <strong>Q W E A S D</strong> to slide in six directions.</p>
+        <p class="game-intro">Swipe or use the arrow keys / WASD. Reach <strong>268,435,456</strong> to win!</p>
         <div class="game-actions">
           <button class="btn-undo" id="undo-btn" type="button" aria-label="Undo last move" title="Undo last move" disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Undo
@@ -95,6 +96,17 @@
             <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           </button>
         </div>
+      </div>
+
+      <div class="auto-play-bar">
+        <span class="auto-play-label">Auto Play</span>
+        <select class="auto-play-select" id="auto-play-select" aria-label="Auto Play pattern">
+          <option value="corner">Corner</option>
+          <option value="swing">Swing</option>
+          <option value="swirl">Swirl</option>
+          <option value="random">Random</option>
+        </select>
+        <button class="btn-auto-play" id="auto-play-btn" type="button">▶ Start</button>
       </div>
     </div>
 
@@ -118,54 +130,45 @@
 
 <main class="sf-main">
   <article class="sf-article" id="how-to-play">
-    <h1>2048 Hexagon</h1>
-    <p class="sf-lead">2048 Hexagon is a puzzle game set in a hexagon-shaped board. The goal is the same but the hexagonal board makes it much more challenging. Same idea as 2048, different shape. The board is a hexagon of 19 cells, and instead of four directions you can slide tiles six ways. It sounds like a small change, but it changes how you plan almost every move.</p>
+    <h1>2048 16x16</h1>
+    <p class="sf-lead">Take the 2048 you know and stretch the board to 16 by 16. That's 256 cells instead of 16, so the rules stay the same but the game feels different: you rarely run out of room, one game can last for hours, and a small bot can play for you.</p>
 
-    <h2>How to play 2048 Hexagon</h2>
-    <p>Each move slides every tile as far as it can go in one direction. Two tiles with the same number that collide merge into their sum, and a new 2 (sometimes a 4) appears. Build a <strong>2048</strong> tile to win, or keep going for a bigger score.</p>
-    <p>On a keyboard, the six directions sit on Q W E and A S D, laid out just like the arrows on the board:</p>
-    <div class="keymap">
-      <div class="keymap-row">
-        <div class="keycap"><span class="keycap-arrow">↖</span><span class="keycap-key">Q</span></div>
-        <div class="keycap"><span class="keycap-arrow">↑</span><span class="keycap-key">W</span></div>
-        <div class="keycap"><span class="keycap-arrow">↗</span><span class="keycap-key">E</span></div>
-      </div>
-      <div class="keymap-row">
-        <div class="keycap"><span class="keycap-arrow">↙</span><span class="keycap-key">A</span></div>
-        <div class="keycap"><span class="keycap-arrow">↓</span><span class="keycap-key">S</span></div>
-        <div class="keycap"><span class="keycap-arrow">↘</span><span class="keycap-key">D</span></div>
-      </div>
-    </div>
-    <p>The arrow keys only cover four of them: <span class="sf-kbd">↑</span> and <span class="sf-kbd">↓</span> match W and S, while <span class="sf-kbd">←</span> and <span class="sf-kbd">→</span> match Q and E. The two lower diagonals exist only on A and D, so if you play with a keyboard, keep your hand on the letters. On a phone, just swipe on the board and the game picks whichever of the six directions is closest to your swipe.</p>
+    <h2>How to play 2048 16x16</h2>
+    <p>Slide the tiles with the arrow keys or <span class="sf-kbd">W</span> <span class="sf-kbd">A</span> <span class="sf-kbd">S</span> <span class="sf-kbd">D</span>, or swipe on the board. Two tiles with the same number merge into one worth double, and a new 2 (sometimes a 4) appears after every move. Numbers past 100,000 are shortened to fit, so 131,072 shows as 131K and 268,435,456 as 268M. Undo takes back your last move.</p>
 
-    <h2>Why it plays differently</h2>
-    <p>There's no straight left or right. Tiles move up, down, or along four diagonals, so the neat rows you'd build in classic 2048 don't exist here. In return, most cells have more neighbors: the center touches six others, and the cells along the edge touch three or four. More neighbors means more chances to merge, but also more room for a stray tile to wedge itself between two big ones.</p>
+    <h2>A win tile you probably won't see</h2>
+    <p>The goal tile is 268,435,456, but every move adds only about 2.2 to the total on the board, so building it takes roughly 122 million moves. At five moves a second, that's over nine months of non-stop play. Treat this as a game about how high you can climb. Your best score is saved, so you can try to beat it.</p>
 
-    <h2>Tips from playing it</h2>
+    <h2>Which Auto Play pattern is best?</h2>
+    <p>Filling 256 cells by hand takes a while, so Auto Play can take over. Each pattern was run 14 times for 20,000 moves, about 45 minutes of play. The results are surprising:</p>
     <ul>
-      <li>Treat the bottom point of the hexagon as your corner. S, A, and D all push tiles downward, and none of them can move a tile out of that bottom cell. You can play most of a game with just those three keys and keep your biggest tile parked there.</li>
-      <li>Reach for W, Q, or E only when nothing below can move, and think about where the new tile might land first.</li>
-      <li>With only 19 cells, the board fills up fast. Merge small tiles early instead of saving them for later.</li>
-      <li>The game ends when every cell is full and no two neighbors match. Undo gives you one step back, which is usually enough to get out of a bad upward slide.</li>
+      <li><strong>Swirl</strong> (up, right, down, left) was best: a typical top tile of 32,768 with only about 20 tiles on the board.</li>
+      <li><strong>Random</strong> matched it, around 32,768 with roughly 30 tiles. Blind guessing was as good as the best plan.</li>
+      <li><strong>Swing</strong> (up and down, then left and right) reached 8,192 while keeping about 240 cells full.</li>
+      <li><strong>Corner</strong>, first in the list, was slowest: 4,096, with 140+ tiles cluttering the board.</li>
     </ul>
+    <p>None of the 56 runs ended in a loss.</p>
+
+    <h2>Tips from the results</h2>
+    <ul>
+      <li>Change direction often. Cycling through all four directions keeps small tiles merging, while pushing one way over and over leaves the board crowded.</li>
+      <li>Skip the 4×4 corner strategy. With this much space, clutter is the danger, not running out of room.</li>
+      <li>Let Swirl handle the slow start. It builds a 512 tile in about 500 moves. Press Stop and take over.</li>
+    </ul>
+
     <h2>FAQs</h2>
     <details>
-      <summary>Is 2048 Hexagon harder than the classic game?</summary>
-      <p>Not exactly harder, just different. You get three more cells than the 4×4 board and two extra directions, but no straight rows to hide behind. Players who rely on the corner strategy usually need a few games to adjust.</p>
+      <summary>Can you lose on a 16x16 board?</summary>
+      <p>Yes, if all 256 cells fill up and no two neighbors match. It's rare: none of the bot runs above ended that way.</p>
     </details>
     <details>
-      <summary>Why doesn't the left arrow move tiles straight left?</summary>
-      <p>Because there is no straight left on this board. The columns of hexagons run up and down, so ← slides tiles up and to the left (the same as Q), and → slides them up and to the right (the same as E).</p>
+      <summary>Does Auto Play stop on its own?</summary>
+      <p>It stops when you win or lose, and when you press Undo or New Game. Moving by hand while it's off doesn't turn it back on.</p>
     </details>
     <details>
       <summary>Can I play on my phone?</summary>
-      <p>Yes. Swipe on the board in any of the six directions. You don't need to be precise, since the game picks the direction closest to your swipe. Swiping outside the board scrolls the page instead.</p>
-    </details>
-    <details>
-      <summary>Is my best score saved?</summary>
-      <p>Yes, in your browser on this device, separately from the other games on this site. Clearing your browser data resets it.</p>
-    </details>
-    <p style="font-size:14px;color:var(--sf-ink-soft)">The hexagonal-board concept is inspired by <a href="https://2048hexagon.com/" target="_blank" rel="nofollow noopener">2048 Hexagon</a>.</p>
+      <p>Yes. Swipe on the board to move the tiles. The cells are small on a phone, but large numbers are shortened so they stay readable.</p>
+    </details>    <p style="font-size:14px;color:var(--sf-ink-soft)">The 16×16 board size and the idea of an Auto Play bot are inspired by <a href="https://garismarvel.github.io/2048/16x16.html" target="_blank" rel="nofollow noopener">this 16×16 variant</a>.</p>
   </article>
 
   <section class="sf-related" aria-labelledby="related-title">
@@ -188,19 +191,19 @@
           <span class="sf-card-play">PLAY</span>
         </span>
       </a>
+      <a class="sf-card" href="/2048-hexagon/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048-hexagon.png" alt="2048 Hexagon game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Hexagon</span>
+          <span class="sf-card-desc">Slide tiles in six directions on a hex grid.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
       <a class="sf-card" href="/2048-fibonacci/">
         <span class="sf-card-thumb"><img src="/assets/thumbs/2048-fibonacci.png" alt="2048 Fibonacci game board" loading="lazy" width="640" height="480"></span>
         <span class="sf-card-body">
           <span class="sf-card-title">2048 Fibonacci</span>
           <span class="sf-card-desc">Merge neighboring Fibonacci numbers up to 2584.</span>
-          <span class="sf-card-play">PLAY</span>
-        </span>
-      </a>
-      <a class="sf-card" href="/2048-16x16/">
-        <span class="sf-card-thumb"><img src="/assets/thumbs/2048-16x16.png" alt="2048 16x16 game board" loading="lazy" width="640" height="480"></span>
-        <span class="sf-card-body">
-          <span class="sf-card-title">2048 16x16</span>
-          <span class="sf-card-desc">A giant 256-cell board with an Auto Play bot.</span>
           <span class="sf-card-play">PLAY</span>
         </span>
       </a>
@@ -218,6 +221,6 @@
 </footer>
 
 <script src="/assets/site.js"></script>
-<script src="/2048-hexagon/game.js"></script>
+<script src="/2048-16x16/game.js"></script>
 </body>
 </html>

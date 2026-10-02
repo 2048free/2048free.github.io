@@ -1,0 +1,530 @@
+:root {
+  --radius: clamp(2px, 0.6vw, 4px);
+  --gap-ratio: 0.07;
+
+  /* This is a size/feature variant of classic 2048 (bigger board, auto-play
+     bot), not a re-themed spin-off like the cupcake or hexagon builds — so
+     the chrome stays in the same warm family as the original rather than
+     inventing its own color identity, just shifted toward a warmer caramel
+     tone so it isn't a pixel-identical copy of the base game's palette. */
+  --bg: #fbf6ec;
+  --ink: #4a3728;
+  --ink-soft: #836c55;
+  --board-bg: #b39774;
+  --cell-bg: rgba(255, 233, 205, 0.5);
+  --overlay-bg: rgba(251, 246, 236, 0.85);
+  --surface: #f0e2c8;
+  --accent: #926d48;
+  --accent-dark: #745233;
+  --link-color: #745233;
+
+  --tile-2-bg: #eee4da;      --tile-2-fg: #4a4238;
+  --tile-4-bg: #ede0c8;      --tile-4-fg: #4a4238;
+  --tile-8-bg: #f2b179;      --tile-8-fg: #fff8f0;
+  --tile-16-bg: #f59563;     --tile-16-fg: #fff8f0;
+  --tile-32-bg: #f67c5f;     --tile-32-fg: #fff8f0;
+  --tile-64-bg: #f65e3b;     --tile-64-fg: #fff8f0;
+  --tile-128-bg: #edcf72;    --tile-128-fg: #fff8f0;
+  --tile-256-bg: #edcc61;    --tile-256-fg: #fff8f0;
+  --tile-512-bg: #edc850;    --tile-512-fg: #fff8f0;
+  --tile-1024-bg: #edc53f;   --tile-1024-fg: #fff8f0;
+  --tile-2048-bg: #edc22e;   --tile-2048-fg: #fff8f0;
+  --tile-super-bg: #3c3a32;  --tile-super-fg: #f9f6f2;
+}
+
+* { box-sizing: border-box; }
+
+/* Page-level rules (body background, font, scrolling) live in
+   assets/site.css — the game only lays out inside .sf-stage, which is sized
+   to roughly one screen below the site header. */
+.app {
+  width: 100%;
+  max-width: 560px;
+  height: 100%;
+  max-height: 820px;
+  padding: clamp(4px, 1.5vw, 12px) clamp(12px, 3vw, 24px) clamp(12px, 3vw, 24px);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 2vw, 14px);
+}
+
+.side-panel {
+  display: contents;
+}
+
+.heading { order: 1; }
+.above-game { order: 2; }
+.auto-play-bar { order: 3; }
+.board-wrap { order: 4; }
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.title-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  line-height: 1;
+  font-size: clamp(22px, 5.5vw, 30px);
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+}
+
+.title-sub {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: clamp(10px, 2.8vw, 13px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #fff;
+  background: var(--accent-dark);
+  border-radius: 999px;
+}
+
+.scores-container {
+  display: flex;
+  gap: 8px;
+  /* Six- and seven-digit scores are normal here; if they push this onto its own row, keep it right-aligned. */
+  margin-left: auto;
+}
+
+.score-box {
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 4px 12px;
+  min-width: 58px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.score-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.85;
+  letter-spacing: 0.5px;
+}
+
+.score-value {
+  font-size: clamp(14px, 3.2vw, 18px);
+  font-weight: 700;
+}
+
+.above-game {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.game-intro {
+  margin: 0;
+  font-size: clamp(12px, 3vw, 14px);
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.game-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: 100%;
+  margin-left: auto;
+}
+
+.btn-new-game,
+.btn-undo {
+  flex-shrink: 0;
+  border: none;
+  background: var(--accent-dark);
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(12px, 3vw, 14px);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-undo svg {
+  width: 1.15em;
+  height: 1.15em;
+}
+
+.btn-new-game:active,
+.btn-undo:active {
+  background: var(--accent);
+}
+
+.btn-undo:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.btn-theme-toggle {
+  flex-shrink: 0;
+  border: none;
+  background: var(--surface);
+  color: var(--ink);
+  line-height: 1;
+  width: clamp(34px, 8vw, 40px);
+  height: clamp(34px, 8vw, 40px);
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-theme-toggle svg {
+  width: 55%;
+  height: 55%;
+}
+
+.btn-theme-toggle .icon-moon {
+  display: none;
+}
+
+:root[data-theme="dark"] .btn-theme-toggle .icon-sun {
+  display: none;
+}
+
+:root[data-theme="dark"] .btn-theme-toggle .icon-moon {
+  display: block;
+}
+
+.btn-theme-toggle:active {
+  background: var(--cell-bg);
+}
+
+/* Auto Play: a pattern picker plus one toggle button, rather than five
+   separate buttons — keeps this extra feature to a single compact row so it
+   doesn't eat into the board's share of a height-constrained viewport. */
+.auto-play-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.auto-play-label {
+  font-size: clamp(11px, 2.8vw, 13px);
+  font-weight: 700;
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+
+.auto-play-select {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: none;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.auto-play-select:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.btn-auto-play {
+  flex-shrink: 0;
+  border: none;
+  background: var(--accent-dark);
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(12px, 3vw, 14px);
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  min-width: 84px;
+}
+
+.btn-auto-play.running {
+  background: #c0392b;
+}
+
+.btn-auto-play:active {
+  filter: brightness(1.1);
+}
+
+.board-wrap {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board {
+  position: relative;
+  width: min(100%, 500px);
+  aspect-ratio: 1 / 1;
+  background: var(--board-bg);
+  border-radius: calc(var(--radius) + 4px);
+  padding: var(--gap);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.grid-bg {
+  position: absolute;
+  inset: var(--gap);
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  grid-template-rows: repeat(16, 1fr);
+  gap: var(--gap);
+}
+
+.grid-bg .cell {
+  background: var(--cell-bg);
+  border-radius: var(--radius);
+}
+
+.tile-layer {
+  position: absolute;
+  inset: var(--gap);
+}
+
+.tile {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius);
+  font-weight: 700;
+  transition: top 100ms ease-in-out, left 100ms ease-in-out, background-color 100ms ease-in-out;
+  will-change: top, left;
+  background: var(--tile-2-bg);
+  color: var(--tile-2-fg);
+}
+
+.tile-layer.no-transition .tile {
+  transition: none;
+}
+
+.tile[data-value="2"]    { background: var(--tile-2-bg);    color: var(--tile-2-fg); }
+.tile[data-value="4"]    { background: var(--tile-4-bg);    color: var(--tile-4-fg); }
+.tile[data-value="8"]    { background: var(--tile-8-bg);    color: var(--tile-8-fg); }
+.tile[data-value="16"]   { background: var(--tile-16-bg);   color: var(--tile-16-fg); }
+.tile[data-value="32"]   { background: var(--tile-32-bg);   color: var(--tile-32-fg); }
+.tile[data-value="64"]   { background: var(--tile-64-bg);   color: var(--tile-64-fg); }
+.tile[data-value="128"]  { background: var(--tile-128-bg);  color: var(--tile-128-fg); }
+.tile[data-value="256"]  { background: var(--tile-256-bg);  color: var(--tile-256-fg); }
+.tile[data-value="512"]  { background: var(--tile-512-bg);  color: var(--tile-512-fg); }
+.tile[data-value="1024"] { background: var(--tile-1024-bg); color: var(--tile-1024-fg); }
+.tile[data-value="2048"] { background: var(--tile-2048-bg); color: var(--tile-2048-fg); }
+.tile[data-super="true"] { background: var(--tile-super-bg); color: var(--tile-super-fg); }
+
+.tile.new {
+  animation: pop 160ms ease-in-out;
+}
+
+.tile.merged {
+  animation: pop 140ms ease-in-out;
+  z-index: 2;
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.4); }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-bg);
+  border-radius: calc(var(--radius) + 4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.overlay[hidden] { display: none; }
+
+.overlay-box {
+  text-align: center;
+  padding: var(--overlay-box-padding, 16px);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.overlay-title {
+  font-size: var(--overlay-title-size, clamp(22px, 6vw, 32px));
+  font-weight: 800;
+  margin: 0 0 var(--overlay-title-gap, 16px);
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.overlay-actions {
+  display: flex;
+  gap: var(--overlay-actions-gap, 10px);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-overlay {
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--overlay-btn-padding, 10px 18px);
+  font-weight: 700;
+  font-size: var(--overlay-btn-size, clamp(13px, 3.4vw, 15px));
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-primary {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+@media (max-height: 700px) {
+  .app {
+    gap: 4px;
+    padding: 8px clamp(12px, 3vw, 24px);
+  }
+  .game-intro {
+    display: none;
+  }
+  .title {
+    font-size: clamp(20px, 6vw, 32px);
+  }
+  .score-box {
+    padding: 3px 10px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 6px 12px;
+  }
+  .auto-play-bar {
+    gap: 6px;
+  }
+  .auto-play-label {
+    display: none;
+  }
+}
+
+@media (max-height: 380px) {
+  .auto-play-bar {
+    display: none;
+  }
+}
+
+@media (max-height: 300px) {
+  .title-sub {
+    display: none;
+  }
+  .app {
+    padding: 6px clamp(12px, 3vw, 24px);
+    gap: 2px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 2px 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 260px) {
+  .btn-new-game,
+  .btn-undo {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  .btn-theme-toggle {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+  .game-actions {
+    gap: 4px;
+  }
+}
+
+@media (max-height: 220px) {
+  .app {
+    padding: 4px clamp(12px, 3vw, 24px);
+    gap: 1px;
+  }
+  .title {
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+  .score-box {
+    padding: 1px 6px;
+    min-width: 36px;
+  }
+  .score-label {
+    font-size: 7px;
+  }
+  .score-value {
+    font-size: 11px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 1px 8px;
+    font-size: 10px;
+  }
+  .btn-theme-toggle {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1e1712;
+  --ink: #f5ead9;
+  --ink-soft: #c2a98c;
+  --board-bg: #33261c;
+  --cell-bg: rgba(255, 220, 180, 0.07);
+  --overlay-bg: rgba(30, 23, 18, 0.85);
+  --surface: #4a3626;
+  --accent: #8a6339;
+  --accent-dark: #5c4127;
+  --link-color: #e0b978;
+}
