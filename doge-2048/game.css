@@ -1,0 +1,590 @@
+:root {
+  --gap: clamp(8px, 2.2vw, 14px);
+  --radius: clamp(6px, 1.6vw, 10px);
+
+  /* Warm shiba-orange and cream. */
+  --bg: #fff3e4;
+  --ink: #5a3b24;
+  --ink-soft: #7e5f43;
+  --board-bg: #e6c9a4;
+  --cell-bg: rgba(255, 248, 236, 0.6);
+  --overlay-bg: rgba(255, 243, 228, 0.86);
+  --surface: #fbe2c0;
+  --accent: #a3672c;
+  --accent-dark: #844913;
+  --link-color: #844913;
+
+  /* One pastel backdrop per doge tier (2 .. 2048). */
+  --tier-1: #fdeccc;
+  --tier-2: #ffdcae;
+  --tier-3: #ffc7a8;
+  --tier-4: #ffb1c4;
+  --tier-5: #e5b4ff;
+  --tier-6: #b4c1ff;
+  --tier-7: #98dcff;
+  --tier-8: #8ff0d6;
+  --tier-9: #c2f288;
+  --tier-10: #ffe86a;
+  --tier-11: #ffc21f;
+  --tier-super: #3a2a52;
+}
+
+* { box-sizing: border-box; }
+
+/* Page-level rules (body background, font, scrolling) live in
+   assets/site.css — the game only lays out inside .sf-stage, which is sized
+   to exactly one screen below the site header. */
+.app {
+  width: 100%;
+  max-width: 560px;
+  height: 100%;
+  max-height: 820px;
+  padding: clamp(4px, 1.5vw, 12px) clamp(12px, 3vw, 24px) clamp(12px, 3vw, 24px);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2.5vw, 16px);
+}
+
+.side-panel {
+  display: contents;
+}
+
+.heading { order: 1; }
+.above-game { order: 2; }
+.board-wrap { order: 3; }
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.title-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  line-height: 1;
+  font-size: clamp(22px, 5.5vw, 30px);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.title .c1 { color: #e86161; }
+.title .c2 { color: #bf7e00; }
+.title .c3 { color: #7a5cff; }
+.title .c4 { color: #119e8f; }
+
+:root[data-theme="dark"] .title .c1 { color: #ff6b6b; }
+:root[data-theme="dark"] .title .c2 { color: #ffa800; }
+:root[data-theme="dark"] .title .c3 { color: #a58cff; }
+:root[data-theme="dark"] .title .c4 { color: #14b8a6; }
+
+.title-sub {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: clamp(10px, 2.8vw, 13px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #fff;
+  background: var(--accent-dark);
+  border-radius: 999px;
+}
+
+.scores-container {
+  display: flex;
+  gap: 8px;
+  /* If a long score pushes this onto its own row, keep it right-aligned. */
+  margin-left: auto;
+}
+
+.score-box {
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 4px 12px;
+  min-width: 58px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.score-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+}
+
+.score-value {
+  font-size: clamp(14px, 3.2vw, 18px);
+  font-weight: 700;
+}
+
+.above-game {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.game-intro {
+  margin: 0;
+  font-size: clamp(12px, 3vw, 14px);
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.game-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: 100%;
+  margin-left: auto;
+}
+
+.btn-new-game,
+.btn-undo {
+  flex-shrink: 0;
+  border: none;
+  background: var(--accent-dark);
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(12px, 3vw, 14px);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-undo svg {
+  width: 1.15em;
+  height: 1.15em;
+}
+
+.btn-new-game:active,
+.btn-undo:active {
+  background: var(--accent);
+}
+
+.btn-undo:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.btn-theme-toggle {
+  flex-shrink: 0;
+  border: none;
+  background: var(--surface);
+  color: var(--ink);
+  line-height: 1;
+  width: clamp(34px, 8vw, 40px);
+  height: clamp(34px, 8vw, 40px);
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-theme-toggle svg {
+  width: 55%;
+  height: 55%;
+}
+
+.btn-theme-toggle .icon-moon {
+  display: none;
+}
+
+:root[data-theme="dark"] .btn-theme-toggle .icon-sun {
+  display: none;
+}
+
+:root[data-theme="dark"] .btn-theme-toggle .icon-moon {
+  display: block;
+}
+
+.btn-theme-toggle:active {
+  background: var(--cell-bg);
+}
+
+.board-wrap {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board {
+  position: relative;
+  width: min(100%, 500px);
+  aspect-ratio: 1 / 1;
+  background: var(--board-bg);
+  border-radius: calc(var(--radius) + 4px);
+  padding: var(--gap);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.grid-bg {
+  position: absolute;
+  inset: var(--gap);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: var(--gap);
+}
+
+.grid-bg .cell {
+  background: var(--cell-bg);
+  border-radius: var(--radius);
+}
+
+.tile-layer {
+  position: absolute;
+  inset: var(--gap);
+}
+
+.tile {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius);
+  transition: top 100ms ease-in-out, left 100ms ease-in-out;
+  will-change: top, left;
+  background: var(--tier-1);
+  box-shadow: 0 1px 3px rgba(60, 30, 0, 0.18);
+}
+
+.tile-layer.no-transition .tile {
+  transition: none;
+}
+
+.tile[data-tier="1"]  { background: var(--tier-1); }
+.tile[data-tier="2"]  { background: var(--tier-2); }
+.tile[data-tier="3"]  { background: var(--tier-3); }
+.tile[data-tier="4"]  { background: var(--tier-4); }
+.tile[data-tier="5"]  { background: var(--tier-5); }
+.tile[data-tier="6"]  { background: var(--tier-6); }
+.tile[data-tier="7"]  { background: var(--tier-7); }
+.tile[data-tier="8"]  { background: var(--tier-8); }
+.tile[data-tier="9"]  { background: var(--tier-9); }
+.tile[data-tier="10"] { background: var(--tier-10); }
+.tile[data-tier="11"] { background: var(--tier-11); }
+.tile[data-super="true"] { background: var(--tier-super); }
+
+.doge-art {
+  width: 94%;
+  height: 94%;
+  pointer-events: none;
+}
+
+.doge-art svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.doge-num {
+  position: absolute;
+  right: 5%;
+  bottom: 4%;
+  padding: 0.08em 0.42em;
+  border-radius: 999px;
+  background: rgba(48, 28, 12, 0.78);
+  color: #fff;
+  font-weight: 800;
+  line-height: 1.25;
+  pointer-events: none;
+}
+
+.tile.new {
+  animation: pop 160ms ease-in-out;
+}
+
+.tile.merged {
+  animation: pop 140ms ease-in-out;
+  z-index: 2;
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.4); }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Doge's one-liners after each merge. Lives inside the board (which clips
+   overflow) so a long phrase can never push the page into a scroll. */
+.speech-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.say {
+  position: absolute;
+  white-space: nowrap;
+  font-family: "Comic Neue", "Comic Sans MS", "Comic Sans", "Chalkboard SE", "Marker Felt", cursive, sans-serif;
+  font-weight: 700;
+  font-size: var(--say-size, 22px);
+  line-height: 1.1;
+  -webkit-text-stroke: 0.14em #3b2416;
+  paint-order: stroke fill;
+  animation: say-float 900ms ease-out both;
+}
+
+@keyframes say-float {
+  0%   { opacity: 0; transform: translateY(8px) scale(0.8) rotate(-4deg); }
+  15%  { opacity: 1; transform: translateY(0) scale(1.05) rotate(-3deg); }
+  70%  { opacity: 1; transform: translateY(-6px) scale(1) rotate(-3deg); }
+  100% { opacity: 0; transform: translateY(-14px) scale(1) rotate(-3deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .speech-layer { display: none; }
+  .tile.new,
+  .tile.merged { animation: none; }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-bg);
+  border-radius: calc(var(--radius) + 4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.overlay[hidden] { display: none; }
+
+.overlay-box {
+  text-align: center;
+  padding: var(--overlay-box-padding, 16px);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.overlay-title {
+  font-size: var(--overlay-title-size, clamp(22px, 6vw, 32px));
+  font-weight: 800;
+  margin: 0 0 var(--overlay-title-gap, 16px);
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.overlay-actions {
+  display: flex;
+  gap: var(--overlay-actions-gap, 10px);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-overlay {
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--overlay-btn-padding, 10px 18px);
+  font-weight: 700;
+  font-size: var(--overlay-btn-size, clamp(13px, 3.4vw, 15px));
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-primary {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.doge-grid {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.doge-grid li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 4px 5px;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.doge-grid .legend-art {
+  width: 100%;
+  max-width: 64px;
+  aspect-ratio: 1 / 1;
+  border-radius: calc(var(--radius) - 2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doge-grid .legend-art svg {
+  width: 92%;
+  height: 92%;
+}
+
+.doge-grid .legend-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.doge-grid li.locked .legend-art svg {
+  filter: brightness(0) opacity(0.28);
+}
+
+.doge-grid li.locked .legend-art {
+  background: var(--cell-bg) !important;
+}
+
+.doge-grid li.locked .legend-label {
+  color: var(--ink-soft);
+}
+
+@media (max-height: 700px) {
+  .app {
+    gap: 4px;
+    padding: 8px clamp(12px, 3vw, 24px);
+  }
+  .game-intro {
+    display: none;
+  }
+  .title {
+    font-size: clamp(20px, 6vw, 32px);
+  }
+  .score-box {
+    padding: 3px 10px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 6px 12px;
+  }
+}
+
+@media (max-height: 300px) {
+  .title-sub {
+    display: none;
+  }
+  .app {
+    padding: 6px clamp(12px, 3vw, 24px);
+    gap: 2px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 2px 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 260px) {
+  .btn-new-game,
+  .btn-undo {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  .btn-theme-toggle {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+  .game-actions {
+    gap: 4px;
+  }
+}
+
+@media (max-height: 220px) {
+  .app {
+    padding: 4px clamp(12px, 3vw, 24px);
+    gap: 1px;
+  }
+  .title {
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+  .score-box {
+    padding: 1px 6px;
+    min-width: 36px;
+  }
+  .score-label {
+    font-size: 7px;
+  }
+  .score-value {
+    font-size: 11px;
+  }
+  .btn-new-game,
+  .btn-undo {
+    padding: 1px 8px;
+    font-size: 10px;
+  }
+  .btn-theme-toggle {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1d1510;
+  --ink: #f8e9d6;
+  --ink-soft: #c9a984;
+  --board-bg: #3a2a1d;
+  --cell-bg: rgba(255, 224, 190, 0.08);
+  --overlay-bg: rgba(29, 21, 16, 0.86);
+  --surface: #4a3524;
+  --accent: #a76525;
+  --accent-dark: #8a4d14;
+  --link-color: #f0b873;
+}
+
+/* The doge collection now lives in the article below the game. */
+.doge-collection-note { margin: 0 0 12px; }
+
+.sf-article .doge-grid {
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.sf-article .doge-grid li { margin: 0; }
+.sf-article .doge-grid .legend-art { max-width: 84px; }
+.sf-article .doge-grid .legend-label { font-size: 14px; }
