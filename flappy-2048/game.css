@@ -1,0 +1,539 @@
+:root {
+  --gap: clamp(8px, 2.2vw, 14px);
+  --radius: clamp(6px, 1.6vw, 10px);
+
+  /* Classic 2048's warm tile gradient stays untouched; the chrome leans
+     green (Flappy Bird's pipes) so the flying tile pops against it. */
+  --bg: #f4f1df;
+  --ink: #43402c;
+  --ink-soft: #69664d;
+  --board-bg: #b4c08e;
+  --cell-bg: rgba(255, 255, 240, 0.5);
+  --overlay-bg: rgba(244, 241, 223, 0.87);
+  --surface: #e6e8c8;
+  --accent: #677c3d;
+  --accent-dark: #466021;
+  --link-color: #466021;
+  --pipe: #62954a;
+  --pipe-dark: #3f6a2c;
+
+  --tile-2-bg: #eee4da;      --tile-2-fg: #4a4238;
+  --tile-4-bg: #ede0c8;      --tile-4-fg: #4a4238;
+  --tile-8-bg: #f2b179;      --tile-8-fg: #fff8f0;
+  --tile-16-bg: #f59563;     --tile-16-fg: #fff8f0;
+  --tile-32-bg: #f67c5f;     --tile-32-fg: #fff8f0;
+  --tile-64-bg: #f65e3b;     --tile-64-fg: #fff8f0;
+  --tile-128-bg: #edcf72;    --tile-128-fg: #fff8f0;
+  --tile-256-bg: #edcc61;    --tile-256-fg: #fff8f0;
+  --tile-512-bg: #edc850;    --tile-512-fg: #fff8f0;
+  --tile-1024-bg: #edc53f;   --tile-1024-fg: #fff8f0;
+  --tile-2048-bg: #edc22e;   --tile-2048-fg: #fff8f0;
+  --tile-super-bg: #3c3a32;  --tile-super-fg: #f9f6f2;
+}
+
+* { box-sizing: border-box; }
+
+/* Page-level rules (body background, font, scrolling) live in
+   assets/site.css — the game only lays out inside .sf-stage, which is sized
+   to exactly one screen below the site header. */
+.app {
+  width: 100%;
+  max-width: 560px;
+  height: 100%;
+  max-height: 820px;
+  padding: clamp(4px, 1.5vw, 12px) clamp(12px, 3vw, 24px) clamp(12px, 3vw, 24px);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2.5vw, 16px);
+}
+
+.side-panel {
+  display: contents;
+}
+
+.heading { order: 1; }
+.above-game { order: 2; }
+.board-wrap { order: 3; }
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.title-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  line-height: 1;
+  font-size: clamp(22px, 5.5vw, 30px);
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+}
+
+.title-sub {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: clamp(10px, 2.8vw, 13px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #fff;
+  background: var(--accent-dark);
+  border-radius: 999px;
+}
+
+.scores-container {
+  display: flex;
+  gap: 8px;
+  /* If a long score pushes this onto its own row, keep it right-aligned. */
+  margin-left: auto;
+}
+
+.score-box {
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 4px 12px;
+  min-width: 58px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.score-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+}
+
+.score-value {
+  font-size: clamp(14px, 3.2vw, 18px);
+  font-weight: 700;
+}
+
+.above-game {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.game-intro {
+  margin: 0;
+  font-size: clamp(12px, 3vw, 14px);
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.game-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: 100%;
+  margin-left: auto;
+}
+
+.btn-new-game {
+  flex-shrink: 0;
+  border: none;
+  background: var(--accent-dark);
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(12px, 3vw, 14px);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-new-game:active {
+  background: var(--accent);
+}
+
+.btn-theme-toggle {
+  flex-shrink: 0;
+  border: none;
+  background: var(--surface);
+  color: var(--ink);
+  line-height: 1;
+  width: clamp(34px, 8vw, 40px);
+  height: clamp(34px, 8vw, 40px);
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-theme-toggle svg {
+  width: 55%;
+  height: 55%;
+}
+
+.btn-theme-toggle .icon-moon {
+  display: none;
+}
+
+:root[data-theme="dark"] .btn-theme-toggle .icon-sun {
+  display: none;
+}
+
+:root[data-theme="dark"] .btn-theme-toggle .icon-moon {
+  display: block;
+}
+
+.btn-theme-toggle:active {
+  background: var(--cell-bg);
+}
+
+.board-wrap {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board {
+  position: relative;
+  width: min(100%, 500px);
+  aspect-ratio: 1 / 1;
+  background: var(--board-bg);
+  border-radius: calc(var(--radius) + 4px);
+  padding: var(--gap);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.grid-bg {
+  position: absolute;
+  inset: var(--gap);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: var(--gap);
+}
+
+.grid-bg .cell {
+  background: var(--cell-bg);
+  border-radius: var(--radius);
+}
+
+/* Walls and the bird live in a clipped layer so they slide in and out from
+   behind the grid edges instead of poking into the board's padding. */
+.tile-layer {
+  position: absolute;
+  inset: var(--gap);
+  overflow: hidden;
+}
+
+.piece {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+
+.pipe {
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--pipe) 0%, var(--pipe-dark) 100%);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.bird .face {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  font-weight: 700;
+  background: var(--tile-2-bg);
+  color: var(--tile-2-fg);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.28);
+}
+
+/* Progress toward the next merge, drawn on the tile itself so it needs no
+   extra layout room. */
+.bird .face::before,
+.bird .face::after {
+  content: "";
+  position: absolute;
+  left: 14%;
+  bottom: 9%;
+  height: 5%;
+  min-height: 2px;
+  border-radius: 999px;
+}
+
+.bird .face::before {
+  width: 72%;
+  background: rgba(0, 0, 0, 0.13);
+}
+
+.bird .face::after {
+  width: calc(72% * var(--progress, 0));
+  background: rgba(0, 0, 0, 0.38);
+}
+
+.bird[data-value="2"]    .face { background: var(--tile-2-bg);    color: var(--tile-2-fg); }
+.bird[data-value="4"]    .face { background: var(--tile-4-bg);    color: var(--tile-4-fg); }
+.bird[data-value="8"]    .face { background: var(--tile-8-bg);    color: var(--tile-8-fg); }
+.bird[data-value="16"]   .face { background: var(--tile-16-bg);   color: var(--tile-16-fg); }
+.bird[data-value="32"]   .face { background: var(--tile-32-bg);   color: var(--tile-32-fg); }
+.bird[data-value="64"]   .face { background: var(--tile-64-bg);   color: var(--tile-64-fg); }
+.bird[data-value="128"]  .face { background: var(--tile-128-bg);  color: var(--tile-128-fg); }
+.bird[data-value="256"]  .face { background: var(--tile-256-bg);  color: var(--tile-256-fg); }
+.bird[data-value="512"]  .face { background: var(--tile-512-bg);  color: var(--tile-512-fg); }
+.bird[data-value="1024"] .face { background: var(--tile-1024-bg); color: var(--tile-1024-fg); }
+.bird[data-value="2048"] .face { background: var(--tile-2048-bg); color: var(--tile-2048-fg); }
+.bird[data-super="true"] .face { background: var(--tile-super-bg); color: var(--tile-super-fg); }
+
+.bird .face.flap {
+  animation: flap 140ms ease-out;
+}
+
+.bird .face.merged {
+  animation: pop 220ms ease-in-out;
+}
+
+.bird.crashed .face {
+  outline: 3px solid #e74c3c;
+  outline-offset: -3px;
+  filter: saturate(1.3);
+}
+
+.bird.grace .face {
+  animation: blink 220ms steps(2, start) infinite;
+}
+
+@keyframes flap {
+  0%   { transform: scale(1, 1); }
+  40%  { transform: scale(1.08, 0.88); }
+  100% { transform: scale(1, 1); }
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.5); }
+  60%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+@keyframes blink {
+  0%   { opacity: 1; }
+  100% { opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bird .face.flap,
+  .bird .face.merged,
+  .bird.grace .face { animation: none; }
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  top: 9%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  padding: 0.45em 1em;
+  border-radius: 999px;
+  background: rgba(35, 40, 20, 0.7);
+  color: #fff;
+  font-size: var(--hint-size, 14px);
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.hint[hidden] { display: none; }
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-bg);
+  border-radius: calc(var(--radius) + 4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.overlay[hidden] { display: none; }
+
+.overlay-box {
+  text-align: center;
+  padding: var(--overlay-box-padding, 16px);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.overlay-title {
+  font-size: var(--overlay-title-size, clamp(22px, 6vw, 32px));
+  font-weight: 800;
+  margin: 0 0 var(--overlay-title-gap, 16px);
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.overlay-sub {
+  font-size: var(--overlay-sub-size, 14px);
+  font-weight: 600;
+  margin: calc(var(--overlay-title-gap, 16px) * -0.5) 0 var(--overlay-title-gap, 16px);
+  color: var(--ink-soft);
+  line-height: 1.2;
+}
+
+.overlay-sub[hidden] { display: none; }
+
+.overlay-actions {
+  display: flex;
+  gap: var(--overlay-actions-gap, 10px);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-overlay {
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--overlay-btn-padding, 10px 18px);
+  font-weight: 700;
+  font-size: var(--overlay-btn-size, clamp(13px, 3.4vw, 15px));
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn-primary {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+@media (max-height: 700px) {
+  .app {
+    gap: 4px;
+    padding: 8px clamp(12px, 3vw, 24px);
+  }
+  .game-intro {
+    display: none;
+  }
+  .title {
+    font-size: clamp(20px, 6vw, 32px);
+  }
+  .score-box {
+    padding: 3px 10px;
+  }
+  .btn-new-game {
+    padding: 6px 12px;
+  }
+}
+
+@media (max-height: 300px) {
+  .title-sub {
+    display: none;
+  }
+  .app {
+    padding: 6px clamp(12px, 3vw, 24px);
+    gap: 2px;
+  }
+  .btn-new-game {
+    padding: 2px 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 260px) {
+  .btn-new-game {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  .btn-theme-toggle {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+  .game-actions {
+    gap: 4px;
+  }
+}
+
+@media (max-height: 220px) {
+  .app {
+    padding: 4px clamp(12px, 3vw, 24px);
+    gap: 1px;
+  }
+  .title {
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+  .score-box {
+    padding: 1px 6px;
+    min-width: 36px;
+  }
+  .score-label {
+    font-size: 7px;
+  }
+  .score-value {
+    font-size: 11px;
+  }
+  .btn-new-game {
+    padding: 1px 8px;
+    font-size: 10px;
+  }
+  .btn-theme-toggle {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #161a12;
+  --ink: #eef0dc;
+  --ink-soft: #b6bd96;
+  --board-bg: #26301c;
+  --cell-bg: rgba(230, 255, 190, 0.07);
+  --overlay-bg: rgba(22, 26, 18, 0.87);
+  --surface: #2f3a22;
+  --accent: #617e38;
+  --accent-dark: #46612a;
+  --link-color: #b8d583;
+  --pipe: #4c7e36;
+  --pipe-dark: #2f5222;
+}
+
+/* A real-time game on a page that scrolls: no text selection or double-tap zoom
+   while tapping around the game area (the article below stays selectable). */
+.sf-stage {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
