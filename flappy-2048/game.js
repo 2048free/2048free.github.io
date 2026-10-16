@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  const GameTrack = window.GameTrack || { init() {}, begin() {}, progress() {}, end() {}, restart() {}, undo() {}, event() {}, flag() {} };
+
   // --- Tuning ---------------------------------------------------------
   // All distances are in grid cells (the board is 4 cells across) and all
   // times in seconds, so the feel is identical on every screen size.
@@ -210,6 +212,7 @@
   function onWallPassed() {
     passes += 1;
     updateScoreDisplay();
+    GameTrack.progress({ score: passes, best: passes % PASSES_PER_MERGE === 0 ? value * 2 : value, level: Math.round(Math.log2(passes % PASSES_PER_MERGE === 0 ? value * 2 : value)) });
     if (passes % PASSES_PER_MERGE === 0) {
       value *= 2;
       updateBirdFace();
@@ -217,6 +220,7 @@
       if (value === WIN_VALUE && !hasWon) {
         hasWon = true;
         state = "won";
+        GameTrack.end("win", trackState());
         endTimer = setTimeout(() => {
           if (state === "won") showOverlay("win");
         }, 300);
@@ -229,6 +233,7 @@
   function crash() {
     state = "over";
     overAt = Date.now();
+    GameTrack.end("lose", trackState());
     birdEl.classList.add("crashed");
     endTimer = setTimeout(() => {
       if (state === "over") showOverlay("lose");
@@ -313,6 +318,7 @@
   }
 
   function startNewGame() {
+    GameTrack.restart();
     resetWorld();
     state = "ready";
     hideOverlay();
@@ -330,6 +336,7 @@
   function flap() {
     switch (state) {
       case "ready":
+        GameTrack.begin();
         state = "playing";
         setHint("");
         bird.vy = FLAP_VY;
@@ -472,6 +479,11 @@
   // --- Init ---
   buildGridBackground();
   bestEl.textContent = String(best);
+  // --- Analytics (anonymous gameplay events, see assets/track.js) ---
+  function trackState() {
+    return { score: passes, best: value, level: Math.round(Math.log2(value)) };
+  }
+  GameTrack.init({ game: "flappy", minLevel: 2 });
   startNewGame();
   requestAnimationFrame(frame);
 })();

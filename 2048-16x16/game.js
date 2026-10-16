@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  const GameTrack = window.GameTrack || { init() {}, begin() {}, progress() {}, end() {}, restart() {}, undo() {}, event() {}, flag() {} };
+
   const SIZE = 16;
   const WIN_VALUE = 268435456; // 2^28 — scaled up from the classic 2048 win
   // tile in rough proportion to how much bigger this board is (256 cells
@@ -89,6 +91,7 @@
   }
 
   function startNewGame() {
+    GameTrack.restart();
     stopAutoPlay();
     clearTimeout(pendingMoveTimeout);
     cells = emptyGrid();
@@ -252,6 +255,7 @@
 
   function undo() {
     if (isBusy || !lastSnapshot) return;
+    GameTrack.undo();
     stopAutoPlay();
     clearTimeout(pendingMoveTimeout);
     isBusy = false;
@@ -328,6 +332,7 @@
 
     lastSnapshot = snapshotBeforeMove;
     undoBtn.disabled = false;
+    GameTrack.progress(trackState());
 
     updateScoreDisplay();
     render();
@@ -369,6 +374,7 @@
   }
 
   function showOverlay(kind) {
+    GameTrack.end(kind === "win" ? "win" : "lose", trackState());
     stopAutoPlay();
     if (kind === "win") {
       overlayTitleEl.textContent = "You Win! 🎉";
@@ -456,6 +462,8 @@
     autoPlaySwirlIndex = 0;
     autoPlayStuckTicks = 0;
     autoPlayLastSignature = null;
+    GameTrack.event("autoplay_start", { pattern: autoPlaySelect.value });
+    GameTrack.flag("autoplay", 1);
     autoPlayTimer = setInterval(autoPlayTick, 140);
     autoPlayBtn.textContent = "■ Stop";
     autoPlayBtn.classList.add("running");
@@ -602,5 +610,12 @@
   // --- Init ---
   buildGridBackground();
   bestEl.textContent = String(best);
+  // --- Analytics (anonymous gameplay events, see assets/track.js) ---
+  function trackState() {
+    let best = 0;
+    tiles.forEach((tile) => { if (tile.value > best) best = tile.value; });
+    return { score, best, level: best ? Math.round(Math.log2(best)) : 0 };
+  }
+  GameTrack.init({ game: "16x16", minLevel: 8 });
   startNewGame();
 })();

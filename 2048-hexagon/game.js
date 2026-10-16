@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  const GameTrack = window.GameTrack || { init() {}, begin() {}, progress() {}, end() {}, restart() {}, undo() {}, event() {}, flag() {} };
+
   // --- Hex geometry (cube coordinates: x + y + z = 0) ---
   // Board radius 2 = 19 cells (the "Big" board size on the sites this is
   // inspired by, which ships with no power-ups — matching the simplified
@@ -150,6 +152,7 @@
   }
 
   function startNewGame() {
+    GameTrack.restart();
     clearTimeout(pendingMoveTimeout);
     cells = new Map();
     tiles = new Map();
@@ -296,6 +299,7 @@
 
   function undo() {
     if (isBusy || !lastSnapshot) return;
+    GameTrack.undo();
     clearTimeout(pendingMoveTimeout);
     isBusy = false;
     cells = lastSnapshot.cells;
@@ -370,6 +374,7 @@
 
     lastSnapshot = snapshotBeforeMove;
     undoBtn.disabled = false;
+    GameTrack.progress(trackState());
 
     updateScoreDisplay();
     render();
@@ -411,6 +416,7 @@
   }
 
   function showOverlay(kind) {
+    GameTrack.end(kind === "win" ? "win" : "lose", trackState());
     if (kind === "win") {
       overlayTitleEl.textContent = "You Win! 🎉";
       overlayContinueBtn.hidden = false;
@@ -539,5 +545,12 @@
   // --- Init ---
   buildGridBackground();
   bestEl.textContent = String(best);
+  // --- Analytics (anonymous gameplay events, see assets/track.js) ---
+  function trackState() {
+    let best = 0;
+    tiles.forEach((tile) => { if (tile.value > best) best = tile.value; });
+    return { score, best, level: best ? Math.round(Math.log2(best)) : 0 };
+  }
+  GameTrack.init({ game: "hexagon", minLevel: 6 });
   startNewGame();
 })();

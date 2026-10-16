@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  const GameTrack = window.GameTrack || { init() {}, begin() {}, progress() {}, end() {}, restart() {}, undo() {}, event() {}, flag() {} };
+
   const SIZE = 4;
   const WIN_VALUE = 2048;
   // Best score is namespaced per game — localStorage is scoped per origin,
@@ -131,6 +133,7 @@
   }
 
   function startNewGame() {
+    GameTrack.restart();
     clearTimeout(pendingMoveTimeout);
     cells = emptyGrid();
     tiles = new Map();
@@ -282,6 +285,7 @@
 
   function undo() {
     if (isBusy || !lastSnapshot) return;
+    GameTrack.undo();
     clearTimeout(pendingMoveTimeout);
     isBusy = false;
     cells = lastSnapshot.cells;
@@ -357,6 +361,7 @@
 
     lastSnapshot = snapshotBeforeMove;
     undoBtn.disabled = false;
+    GameTrack.progress(trackState());
 
     updateScoreDisplay();
     render();
@@ -398,6 +403,7 @@
   }
 
   function showOverlay(kind) {
+    GameTrack.end(kind === "win" ? "win" : "lose", trackState());
     if (kind === "win") {
       overlayTitleEl.textContent = "You Win! 🧁";
       overlayContinueBtn.hidden = false;
@@ -554,5 +560,12 @@
   buildGridBackground();
   buildTileLegend();
   bestEl.textContent = String(best);
+  // --- Analytics (anonymous gameplay events, see assets/track.js) ---
+  function trackState() {
+    let best = 0;
+    tiles.forEach((tile) => { if (tile.value > best) best = tile.value; });
+    return { score, best, level: best ? Math.round(Math.log2(best)) : 0 };
+  }
+  GameTrack.init({ game: "cupcakes", minLevel: 6 });
   startNewGame();
 })();

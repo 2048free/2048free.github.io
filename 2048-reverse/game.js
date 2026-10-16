@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  const GameTrack = window.GameTrack || { init() {}, begin() {}, progress() {}, end() {}, restart() {}, undo() {}, event() {}, flag() {} };
+
   const SIZE = 4;
   const WIN_VALUE = 2; // merging down to a 2 tile wins, instead of up to 2048
   // New tiles spawn as big, not small — the entire board keeps flooding
@@ -98,6 +100,7 @@
   }
 
   function startNewGame() {
+    GameTrack.restart();
     clearTimeout(pendingMoveTimeout);
     cells = emptyGrid();
     tiles = new Map();
@@ -237,6 +240,7 @@
 
   function undo() {
     if (isBusy || !lastSnapshot) return;
+    GameTrack.undo();
     clearTimeout(pendingMoveTimeout);
     isBusy = false;
     cells = lastSnapshot.cells;
@@ -319,6 +323,7 @@
 
     lastSnapshot = snapshotBeforeMove;
     undoBtn.disabled = false;
+    GameTrack.progress(trackState());
 
     updateScoreDisplay();
     render();
@@ -361,6 +366,7 @@
   }
 
   function showOverlay(kind) {
+    GameTrack.end(kind === "win" ? "win" : "lose", trackState());
     if (kind === "win") {
       overlayTitleEl.textContent = "You Win! 🎉";
       overlayContinueBtn.hidden = false;
@@ -496,5 +502,13 @@
   // --- Init ---
   buildGridBackground();
   bestEl.textContent = String(best);
+  // --- Analytics (anonymous gameplay events, see assets/track.js) ---
+  function trackState() {
+    let best = Infinity;
+    tiles.forEach((tile) => { if (tile.value < best) best = tile.value; });
+    if (!isFinite(best)) best = 0;
+    return { score, best, level: best ? Math.round(Math.log2(4096 / best)) : 0 };
+  }
+  GameTrack.init({ game: "reverse", minLevel: 6 });
   startNewGame();
 })();
