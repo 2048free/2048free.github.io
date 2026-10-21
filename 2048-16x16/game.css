@@ -528,3 +528,21 @@
   --accent-dark: #5c4127;
   --link-color: #e0b978;
 }
+
+/* Suggestion row shown after an Auto Play run is stopped (see game.js). */
+.next-games {
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  font-size: clamp(11px, 2.9vw, 13px);
+  color: var(--sf-ink-soft);
+}
+.next-games a {
+  color: var(--sf-ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.next-games a:focus-visible { outline: 3px solid var(--sf-accent-dark); outline-offset: 2px; border-radius: 3px; }

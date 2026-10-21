@@ -458,6 +458,8 @@
 
   function startAutoPlay() {
     stopAutoPlay();
+    hideNextGames();
+    autoPlayStartedAt = Date.now();
     autoPlaySide = 0;
     autoPlaySwirlIndex = 0;
     autoPlayStuckTicks = 0;
@@ -470,11 +472,33 @@
     autoPlaySelect.disabled = true;
   }
 
+  // Auto Play players stay a long time. When they stop a run, point them at
+  // other games (the "You may also like" list is far below the first screen).
+  let autoPlayStartedAt = 0;
+  let nextGamesEl = null;
+  function showNextGames() {
+    if (nextGamesEl) return;
+    nextGamesEl = document.createElement("div");
+    nextGamesEl.className = "next-games";
+    nextGamesEl.innerHTML =
+      '<span>Enjoying it? Try</span>' +
+      '<a href="/2048-fibonacci/">2048 Fibonacci</a>' +
+      '<a href="/2048-reverse/">2048 Reverse</a>' +
+      '<a href="/flappy-2048/">Flappy 2048</a>';
+    autoPlayBtn.closest(".auto-play-bar").appendChild(nextGamesEl);
+  }
+  function hideNextGames() {
+    if (nextGamesEl && nextGamesEl.parentNode) nextGamesEl.parentNode.removeChild(nextGamesEl);
+    nextGamesEl = null;
+  }
+
   function stopAutoPlay() {
+    const wasRunning = !!autoPlayTimer;
     if (autoPlayTimer) {
       clearInterval(autoPlayTimer);
       autoPlayTimer = null;
     }
+    if (wasRunning && Date.now() - autoPlayStartedAt > 8000) showNextGames();
     autoPlayBtn.textContent = "▶ Start";
     autoPlayBtn.classList.remove("running");
     autoPlaySelect.disabled = false;

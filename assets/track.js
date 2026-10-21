@@ -163,7 +163,7 @@
       const target = (a.getAttribute("href") || "").slice(0, 100);
       if (a.closest("#sf-menu")) send("menu_click", { target }, true);
       else if (a.closest(".sf-actions")) send("more_games_click", { target }, true);
-      else if (a.closest(".sf-related")) send("related_game_click", { target }, true);
+      else if (a.closest(".sf-related, .next-games")) send("related_game_click", { target }, true);
       else if (a.closest(".sf-grid")) send("catalog_click", { target }, true);
       else if (a.closest(".sf-footer")) send("footer_click", { target }, true);
     }
