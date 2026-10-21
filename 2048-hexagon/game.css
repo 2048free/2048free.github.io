@@ -542,3 +542,25 @@
 :root[data-theme="dark"] .sf-article .keycap { background: #26313c; }
 :root[data-theme="dark"] .sf-article .keycap-arrow { color: #8fb8db; }
 :root[data-theme="dark"] .sf-article .keycap-key { color: #e7edf2; }
+
+/* Six-direction pad, touch devices only (see game.js). */
+.hex-pad {
+  order: 3;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  width: min(100%, 240px);
+  margin: 6px auto 0;
+}
+.hex-pad-btn {
+  height: 38px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--sf-surface);
+  color: var(--sf-ink);
+  font: 700 20px/1 var(--sf-font);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.hex-pad-btn:active { background: var(--sf-surface-hover); }
+.hex-pad-btn:focus-visible { outline: 3px solid var(--sf-accent-dark); outline-offset: 2px; }

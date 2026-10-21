@@ -525,6 +525,33 @@
     touchActive = false;
   });
 
+  // On touchscreens a flat-top hexagon has no pure left or right, so a plain
+  // horizontal swipe is a coin flip between two diagonals. A small pad of six
+  // buttons gives an unambiguous way to play.
+  if (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) {
+    const pad = document.createElement("div");
+    pad.className = "hex-pad";
+    pad.setAttribute("role", "group");
+    pad.setAttribute("aria-label", "Move direction");
+    [
+      ["upperLeft", "↖", "Up left"],
+      ["up", "↑", "Up"],
+      ["upperRight", "↗", "Up right"],
+      ["lowerLeft", "↙", "Down left"],
+      ["down", "↓", "Down"],
+      ["lowerRight", "↘", "Down right"],
+    ].forEach(([name, glyph, label]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "hex-pad-btn";
+      b.textContent = glyph;
+      b.setAttribute("aria-label", label);
+      b.addEventListener("click", () => move(name));
+      pad.appendChild(b);
+    });
+    boardEl.closest(".board-wrap").insertAdjacentElement("afterend", pad);
+  }
+
   // --- Buttons ---
   newGameBtn.addEventListener("click", startNewGame);
   overlayRetryBtn.addEventListener("click", startNewGame);

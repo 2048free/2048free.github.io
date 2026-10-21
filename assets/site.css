@@ -578,3 +578,33 @@ body.sf {
   .sf-btn, .sf-btn-outline { font-size: 13px; padding: 8px 9px; }
   .sf-btn-outline .sf-icon { display: none; }
 }
+
+/* --- First-move hint pill (assets/hint.js) --- */
+.sf-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  z-index: 5;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--sf-accent-dark);
+  color: var(--sf-on-accent);
+  font: 600 13px/1.3 var(--sf-font);
+  white-space: nowrap;
+  max-width: calc(100% - 16px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  animation: sf-hint-pulse 2.4s ease-in-out infinite;
+  transition: opacity 0.25s ease;
+}
+.sf-hint-out { opacity: 0; animation: none; }
+@keyframes sf-hint-pulse {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sf-hint { animation: none; }
+}
