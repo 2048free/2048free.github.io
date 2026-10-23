@@ -10,6 +10,8 @@
  *   game_restart       New Game pressed in the middle of a run (where the player gave up)
  *   game_leave         page hidden / closed in the middle of a run (where the player stopped)
  *   exit_without_play  page hidden / closed before any move  (seconds_on_page, article_seen)
+ *   embed_interact     embedded (iframe) games only: first real click or touch inside the frame (seconds_to_interact)
+ *   embed_leave        embedded games only: page hidden / closed (seconds_on_page, interacted)
  *   game_undo, theme_toggle, autoplay_start, doge_unlock, faq_open, article_view,
  *   menu_click, more_games_click, related_game_click, catalog_click, footer_click, js_error
  *
@@ -23,7 +25,7 @@
   const IDLE_CAP_MS = 30000; // a gap longer than this between moves is not counted as playing time
   const PAGE_NAMES = {
     "": "classic", "2048-cupcakes": "cupcakes", "2048-hexagon": "hexagon", "2048-fibonacci": "fibonacci",
-    "2048-16x16": "16x16", "2048-reverse": "reverse", "doge-2048": "doge", "flappy-2048": "flappy",
+    "2048-16x16": "16x16", "2048-reverse": "reverse", "doge-2048": "doge", "flappy-2048": "flappy", "cubes-2048-io": "cubes",
     "2048-games": "catalog", about: "about", "privacy-policy": "privacy",
   };
   const seg = location.pathname.split("/").filter(Boolean)[0] || "";
@@ -128,6 +130,13 @@
       send("game_undo", { level: run.level, moves: run.moves, undo_count: run.undos });
     },
 
+    // Embedded (iframe) games: the page cannot see moves, so the first click or touch inside the frame is the
+    // best "started playing" signal. Sent once, and used by embed_leave below.
+    embedInteract() {
+      if (cfg.interacted) return;
+      cfg.interacted = true;
+      send("embed_interact", { seconds_to_interact: secs(now() - t0) });
+    },
     event(name, params) { send(name, params); },
     flag(key, value) { run.extras[key] = value; },
   };
@@ -136,6 +145,12 @@
   // --- leaving the page -------------------------------------------------
   function onHide(reason) {
     if (!cfg.game) return;
+    if (cfg.embedded) {
+      if (noPlaySent) return;
+      noPlaySent = true;
+      send("embed_leave", { seconds_on_page: secs(now() - t0), interacted: cfg.interacted ? 1 : 0, article_seen: articleSeen ? 1 : 0, reason }, true);
+      return;
+    }
     if (!run.started) {
       if (noPlaySent) return;
       noPlaySent = true;

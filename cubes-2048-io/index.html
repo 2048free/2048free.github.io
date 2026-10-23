@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<script>try{var q=location.search.match(/[?&]notrack=([01])/);if(q)localStorage.setItem("2048free_notrack",q[1]);if(location.hostname!=="2048free.github.io"||localStorage.getItem("2048free_notrack")==="1")window["ga-disable-G-G84GT2WR56"]=true}catch(e){}</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G84GT2WR56"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-G84GT2WR56');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cubes 2048 IO</title>
+<meta name="description" content="Play Cubes 2048 IO free in your browser. Steer a numbered cube, merge matching cubes, and climb the leaderboard. Controls, speed boost, and tips.">
+<link rel="canonical" href="https://2048free.github.io/cubes-2048-io/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cubes 2048 IO">
+<meta property="og:description" content="Steer a numbered cube, merge matching cubes, and outgrow the arena.">
+<meta property="og:url" content="https://2048free.github.io/cubes-2048-io/">
+<meta property="og:image" content="https://2048free.github.io/assets/thumbs/cubes-2048-io.png">
+<link rel="icon" href="/assets/favicon-cubes.svg" type="image/svg+xml">
+<script>try{if(localStorage.getItem("2048free_theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/cubes-2048-io/game.css">
+</head>
+<body class="sf">
+
+<header class="sf-header">
+  <div class="sf-header-inner">
+    <div class="sf-brand">
+      <button class="sf-logo" id="sf-menu-toggle" type="button" aria-expanded="false" aria-controls="sf-menu" aria-label="Open menu">
+        <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>2048
+      </button>
+      <nav class="sf-menu" id="sf-menu" hidden>
+        <a class="sf-menu-item" href="/">
+          <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>
+          <span><b>2048</b><small>The original 4×4 puzzle</small></span>
+        </a>
+        <a class="sf-menu-item" href="#how-to-play">
+          <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg>
+          <span><b>How to play</b><small>Controls, tips, and FAQs</small></span>
+        </a>
+        <a class="sf-menu-item" href="/2048-games/">
+          <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
+          <span><b>More 2048 games</b><small>Cupcakes, Hexagon, and more</small></span>
+        </a>
+        <div class="sf-menu-sep"></div>
+        <div class="sf-menu-links">
+          <a href="/2048-cupcakes/">2048 Cupcakes</a>
+          <a href="/2048-hexagon/">2048 Hexagon</a>
+          <a href="/2048-fibonacci/">2048 Fibonacci</a>
+          <a href="/about/">About</a>
+          <a href="/privacy-policy/">Privacy Policy</a>
+        </div>
+      </nav>
+    </div>
+    <div class="sf-actions">
+      <a class="sf-btn-outline" href="/2048-games/">
+        <svg class="sf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg><span>More<span class="sf-hide-sm"> 2048</span> games</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<section class="sf-stage" aria-label="Cubes 2048 IO game">
+  <div class="app">
+    <div class="heading">
+      <div class="title-block">
+        <div class="title"><span class="c1">2</span><span class="c2">0</span><span class="c3">4</span><span class="c4">8</span></div>
+        <span class="title-sub">Cubes IO</span>
+      </div>
+      <p class="game-intro">Hold the mouse or your finger to steer your cube. Run into a cube with the same number to merge. Bigger cubes win.</p>
+      <div class="game-actions">
+        <button class="btn-fullscreen" id="fullscreen-btn" type="button" aria-label="Play full screen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Full screen
+        </button>
+        <button class="btn-theme-toggle" id="theme-toggle-btn" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="frame-wrap" id="frame-wrap">
+      <iframe id="game-frame" title="Cubes 2048 IO" src="https://ubg17.github.io/Cubes2048IO/" allow="fullscreen; autoplay" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-pointer-lock"></iframe>
+      <div class="frame-note" id="frame-note">Loading the arena…</div>
+    </div>
+  </div>
+</section>
+
+<main class="sf-main">
+  <article class="sf-article" id="how-to-play">
+    <h1>Cubes 2048 IO</h1>
+    <p class="sf-lead"><strong>Cubes 2048 IO</strong> is a free arena game that mixes the number-merging of 2048 with the grow-or-get-eaten feel of .io games. You steer a numbered cube across an open floor, merge it with cubes that carry the same number to double its value, and try to climb a live leaderboard without running into something bigger than you.</p>
+
+    <h2>How to play Cubes 2048 IO</h2>
+    <p>Type a name if you like, then press Tap to Start. Your cube begins as a red 2 and follows your pointer: move the mouse, or drag on a touchscreen, and a small arrow under the cube shows where it is heading. On a computer, hold the left mouse button to speed up. On a phone, use the round speed button in the corner. The tutorial hand draws a figure eight for a reason: the cube never sits still, so keep steering in smooth curves.</p>
+    <p>Dozens of loose 2s lie around the floor. Run into one that matches your number and the two merge into the next value, with a new color to go with it. In my first minute of testing, one bump turned a red 2 into a blue 4. The numbers climb from there, and every rival is a cube with a value of its own.</p>
+
+    <h2>Reading the screen</h2>
+    <p>The top-right leaderboard lists ranks, names, and scores, with big numbers shortened to 1K and up and crowns on the top three. Messages like "Winchester defeated Smoke Zone" scroll past whenever a cube is wiped out. Large dark-gray slabs mark the edge of the arena, so a cube pinned against one has fewer ways out.</p>
+    <p>When your cube is destroyed, a ring counts down from seven and offers one revive. That revive is built around a rewarded video, so treat it as a bonus, not a plan. The same goes for the "Start bigger" bubble on the menu.</p>
+
+    <h2>Tips</h2>
+    <ul>
+      <li>Collect and merge the loose 2s first. Staying small and quick near the edge of the crowd is safer than charging into the middle.</li>
+      <li>Check the number before you close in. My first run ended in about two seconds because I drifted toward a 16 while still a 2.</li>
+      <li>Save the speed boost for escaping or for a clean merge. It is hard to turn sharply at full speed.</li>
+      <li>Glance at the leaderboard now and then. If the same name keeps climbing, steer away from that part of the arena.</li>
+    </ul>
+
+    <h2>FAQs</h2>
+    <details>
+      <summary>Are the other cubes real players?</summary>
+      <p>No. The game's own settings list computer-controlled rivals, so you are not competing with other visitors, and there is no account or lobby.</p>
+    </details>
+    <details>
+      <summary>Can I play Cubes 2048 IO on my phone?</summary>
+      <p>Yes. Drag your finger to steer and tap the speed button to boost. The Full screen button above the game gives you more room.</p>
+    </details>
+    <details>
+      <summary>Do I have to enter my real name?</summary>
+      <p>No. The game fills in a random one such as player2876, and names can be up to 18 characters. A nickname is fine.</p>
+    </details>
+    <p style="font-size:14px;color:var(--sf-ink-soft)">Cubes 2048 IO is not built by us. It runs unchanged from its original host at <a href="https://ubg17.github.io/Cubes2048IO/" target="_blank" rel="nofollow noopener">ubg17.github.io/Cubes2048IO</a>, and all credit for the game goes to its creators.</p>
+  </article>
+
+  <section class="sf-related" aria-labelledby="related-title">
+    <p class="sf-section-title" id="related-title">You may also like</p>
+    <p class="sf-section-sub">More free 2048 games to play in your browser.</p>
+    <div class="sf-grid">
+      <a class="sf-card" href="/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048.png" alt="Classic 2048 game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Classic</span>
+          <span class="sf-card-desc">The original number-merging puzzle.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+      <a class="sf-card" href="/2048-cupcakes/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048-cupcakes.png" alt="2048 Cupcakes game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Cupcakes</span>
+          <span class="sf-card-desc">Merge sweet cupcakes instead of numbers.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+      <a class="sf-card" href="/2048-hexagon/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048-hexagon.png" alt="2048 Hexagon game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Hexagon</span>
+          <span class="sf-card-desc">Slide tiles in six directions on a hex grid.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+      <a class="sf-card" href="/2048-fibonacci/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048-fibonacci.png" alt="2048 Fibonacci game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Fibonacci</span>
+          <span class="sf-card-desc">Merge neighboring Fibonacci numbers up to 2584.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+      <a class="sf-card" href="/2048-16x16/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048-16x16.png" alt="2048 16x16 game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 16x16</span>
+          <span class="sf-card-desc">A giant 256-cell board with an Auto Play bot.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+      <a class="sf-card" href="/2048-reverse/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/2048-reverse.png" alt="2048 Reverse game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">2048 Reverse</span>
+          <span class="sf-card-desc">Merging halves tiles. Shrink your way down to a 2.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+      <a class="sf-card" href="/doge-2048/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/doge-2048.png" alt="Doge 2048 game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">Doge 2048</span>
+          <span class="sf-card-desc">Merge cute doges and unlock all 11. Much wow.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+      <a class="sf-card" href="/flappy-2048/">
+        <span class="sf-card-thumb"><img src="/assets/thumbs/flappy-2048.png" alt="Flappy 2048 game board" loading="lazy" width="640" height="480"></span>
+        <span class="sf-card-body">
+          <span class="sf-card-title">Flappy 2048</span>
+          <span class="sf-card-desc">Flap a number tile through the walls and merge up.</span>
+          <span class="sf-card-play">PLAY</span>
+        </span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="sf-footer">
+  <nav aria-label="Footer">
+    <a href="/2048-games/">All 2048 games</a>
+    <a href="/about/">About</a>
+    <a href="/privacy-policy/">Privacy Policy</a>
+  </nav>
+  <p>© 2026 2048free.github.io · Inspired by <a href="https://github.com/gabrielecirulli/2048" target="_blank" rel="nofollow noopener">2048 by Gabriele Cirulli</a></p>
+</footer>
+
+<script src="/assets/site.js"></script>
+<script src="/assets/track.js"></script>
+<script src="/cubes-2048-io/embed.js"></script>
+</body>
+</html>
