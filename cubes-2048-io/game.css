@@ -135,3 +135,50 @@
 @media (max-height: 560px) {
   .title-sub, .game-intro { display: none; }
 }
+
+/* Click-to-play cover: the game (about 4 MB) only loads after the player asks for it. */
+.frame-play {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #fff;
+  background:
+    linear-gradient(rgba(10, 24, 52, 0.38), rgba(10, 24, 52, 0.55)),
+    #1c3560 url("/assets/thumbs/cubes-2048-io.png") center / cover no-repeat;
+  font-family: var(--sf-font);
+}
+.frame-play[hidden] { display: none; }
+.frame-play-btn {
+  width: clamp(64px, 14vw, 92px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #3da35d;
+  box-shadow: 0 4px 0 #2a7a43, 0 8px 22px rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+  transition: transform 0.15s ease;
+}
+.frame-play-btn svg { width: 46%; height: 46%; margin-left: 6%; }
+.frame-play:hover .frame-play-btn { transform: scale(1.06); }
+.frame-play:active .frame-play-btn { transform: scale(0.97); }
+.frame-play-label {
+  font-weight: 800;
+  font-size: clamp(15px, 3.6vw, 20px);
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+.frame-play:focus-visible { outline: 4px solid #fff; outline-offset: -8px; }
+.frame-nojs { margin: 0; position: absolute; inset: auto 12px 12px; color: #dbe7fb; font-size: 14px; text-align: center; }
+@media (prefers-reduced-motion: reduce) {
+  .frame-play-btn { transition: none; }
+}
+
+.frame-wrap iframe[hidden] { display: none; }

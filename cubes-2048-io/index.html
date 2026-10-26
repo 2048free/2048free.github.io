@@ -84,8 +84,13 @@
       </div>
     </div>
     <div class="frame-wrap" id="frame-wrap">
-      <iframe id="game-frame" title="Cubes 2048 IO" src="https://ubg17.github.io/Cubes2048IO/" allow="fullscreen; autoplay" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-pointer-lock"></iframe>
-      <div class="frame-note" id="frame-note">Loading the arena…</div>
+      <iframe id="game-frame" title="Cubes 2048 IO" data-src="https://ubg17.github.io/Cubes2048IO/" allow="fullscreen; autoplay" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-pointer-lock" hidden></iframe>
+      <button class="frame-play" id="frame-play" type="button" aria-label="Play Cubes 2048 IO">
+        <span class="frame-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg></span>
+        <span class="frame-play-label">Play Cubes 2048 IO</span>
+      </button>
+      <div class="frame-note is-gone" id="frame-note">Loading the arena…</div>
+      <noscript><p class="frame-nojs">Turn on JavaScript to play Cubes 2048 IO here.</p></noscript>
     </div>
   </div>
 </section>
